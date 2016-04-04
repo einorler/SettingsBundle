@@ -28,5 +28,9 @@
                 <script src="{{ asset('bundles/ongrsettings/js/service/SettingService.js') }}"></script>
             {% endblock %}
         {% endblock %}
+        {% block js %}
+            {% block js_inner %}
+            {% endblock %}
+        {% endblock %}
     </body>
 </html>

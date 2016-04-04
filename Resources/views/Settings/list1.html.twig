@@ -1,0 +1,80 @@
+{% extends 'ONGRSettingsBundle::layout.html.twig' %}
+
+{% block body_attributes %}{% endblock %}
+{% block wrapper_attributes %}{% endblock %}
+
+{% block main %}
+    {% include 'inc/addSettingModal.html.twig' %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Type</th>
+                        <th>Settings</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    {% for data in data %}
+                        <tbody>
+                        <tr>
+                            <td class=".col-xs-8 .col-md-6">{{ data.name }}</td>
+                            <td class=".col-xs-18 .col-md-8">{{ data.description }}</td>
+                            <td class=".col-xs-6 .col-md-4">{{ data.type }}</td>
+                            <td class=".col-xs-12 .col-md-8">
+                                <div class="settings-container">
+                                    <div>
+                                        {% if data.type == 'boolean' %}
+                                            <div class="btn-group btn-group-sm">
+                                                <label class="boolean btn btn-default {% if data.data.value == true %}btn-primary{% endif %}" >On</label>
+                                                <label class="boolean btn btn-default {% if data.data.value == false %}btn-primary{% endif %}" >Off</label>
+                                            </div>
+                                        {% elseif data.type == 'string' %}
+                                            <a href="" class="string" rel="{{ data.id }}" onclick="stringUpdateChange(this, event)">{{ data.data.value }}</a>
+                                        {% elseif data.type == 'array' %}
+                                            <div class="array-setting-group">
+                                                <ul class="list-unstyled">
+                                                {% for element in data.data.value|slice(0,3) %}
+                                                    <li>{{ element }}</li>
+                                                {% endfor %}
+                                                <li><a href="#" onclick="arrayHandleList(this, event, '{{ data.data.value|json_encode }}')">more</a></li>
+                                                </ul>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td class="col-xs-3">
+                                <a href="#" class="btn btn-primary btn-xs">
+                                    <span class="glyphicon glyphicon-edit"></span>
+                                </a>
+                                <a href="#" class="btn btn-primary btn-xs" >
+                                    <span class="glyphicon glyphicon-transfer"></span>
+                                </a>
+                                <a href="#" class="btn btn-danger btn-xs">
+                                    <span class="glyphicon glyphicon-remove"></span>
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+        {% block pager %}
+            {% if filters.pager is defined %}
+                <div class="pull-right">{{ ongr_paginate(filters.pager.pager, 'ongr_settings_settings_list', filters.pager.urlParameters) }}</div>
+                <div class="clearfix"></div>
+            {% endif %}
+        {% endblock %}
+    </div>
+{% endblock %}
+
+{% block js_inner %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="{{ asset('bundles/ongrsettings/js/main.js') }}"></script>
+{% endblock %}
