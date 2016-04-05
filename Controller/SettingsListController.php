@@ -30,7 +30,7 @@ class SettingsListController extends Controller
     public function listAction(Request $request)
     {
         return $this->render(
-            'ONGRSettingsBundle:Settings:list.html.twig',
+            'ONGRSettingsBundle:Settings:list1.html.twig',
             array_merge(
                 $this->getListData($request)
             )
@@ -50,6 +50,7 @@ class SettingsListController extends Controller
 
         return [
             'data' => iterator_to_array($filterManager->getResult()),
+            'profiles' => $this->get('ongr_settings.profile_manager')->findAllProfiles(),
             'filters' => $filterManager->getFilters(),
             'routeParams' => $filterManager->getUrlParameters(),
         ];
