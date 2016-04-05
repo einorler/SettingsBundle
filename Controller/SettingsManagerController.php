@@ -13,9 +13,12 @@ namespace ONGR\SettingsBundle\Controller;
 
 use ONGR\SettingsBundle\Settings\General\SettingsManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Yaml\Parser;
 
 /**
  * SettingsManager controller responsible for CRUD actions from frontend for settings.
@@ -28,24 +31,56 @@ class SettingsManagerController extends Controller
      * Action for saving/seting setting values.
      *
      * @param Request $request
-     * @param string  $name
-     * @param string  $profile
      *
      * @return Response
      */
-    public function setSettingAction(Request $request, $name, $profile = 'default')
+    public function setSettingAction(Request $request)
     {
-        $value = json_decode($request->request->get('value'), true);
-
-        if (json_last_error() != JSON_ERROR_NONE) {
-            // Not Acceptable.
-            return new Response(Response::$statusTexts[406], 406);
-        }
-
+        $data = json_decode($request->request->get('data'), true);
         $manager = $this->getSettingsManager();
-        $manager->set($name, $value, $profile);
+        $parser = new Parser();
+        $value = $data['setting_value'];
+        $type = $data['setting_type'];
+        $name = htmlentities($data['setting_name']);
+        $profiles = $data['setting_profiles'];
+        $description = htmlentities($data['setting_description']);
+        $response = [];
+        $response['error'] = '';
 
-        return new Response();
+        switch ($type) {
+            case 'Boolean':
+                $value == 'true' ? $value = true : $value = false;
+                break;
+            case 'Default':
+                $value = htmlentities($value);
+                break;
+            case 'Object':
+                try {
+                    $value = $parser->parse($value);
+                } catch (\Exception $e) {
+                    $response['error'] = 'Passed setting value is not correct yaml';
+                    $response['code'] = 406;
+                    return new JsonResponse(json_encode($response));
+                }
+                break;
+            case 'Array':
+                foreach ($value as $key => $item) {
+                    $value[$key] = htmlentities($item);
+                }
+                break;
+        }
+        try {
+            foreach ($profiles as $profile) {
+                $manager->set($name, $value, $profile);
+            }
+        } catch (\Exception $e) {
+            $response['error'] = 'Insertion failed: '.$e->getMessage();
+            $response['code'] = 406;
+        }
+        if (!isset($response['code'])) {
+            $response['code'] = 201;
+        }
+        return new JsonResponse(json_encode($response));
     }
 
     /**

@@ -8,19 +8,17 @@
 
                 <!-- typeahead="profile for profile in profiles | filter:$viewValue | limitTo:8" -->
 
-                <form class="form-horizontal" name="addSettingForm">
+                <form id="addSettingForm" class="form-horizontal" url="{{ path('ongr_settings_setting_set', ['hjkfb','kjbf']) }}" name="addSettingForm">
                     <div class="form-group">
                         <label for="name" class="col-sm-2 control-label">Name</label>
                         <div class="col-sm-6">
-                            <input id="name" type="text" name="settingName" class="form-control"/>
+                            <input id="addSettingName" type="text" name="settingName" class="form-control"/>
                         </div>
-                        <p class="help-block">Setting name required!</p>
                     </div>
                     <div class="form-group">
                         <label for="profile" class="col-sm-2 control-label">Profiles</label>
                         <div class="col-sm-6">
-                            <input id="profile" type="text" name="settingProfile" class="form-control"/>
-                            <select id="example-getting-started" multiple="multiple" name="settingProfile" class="form-control">
+                            <select id="addSettingProfiles" multiple="multiple" name="settingProfile" class="form-control">
                                 {% for profile in profiles %}
                                     <option value="{{ profile.name }}">{{ profile.name }}</option>
                                 {% endfor %}
@@ -30,13 +28,13 @@
                     <div class="form-group">
                         <label for="description" class="col-sm-2 control-label">Description</label>
                         <div class="col-sm-6">
-                            <input id="description" type="text" name="settingDescription" class="form-control"/>
+                            <input id="addSettingDescription" type="text" name="settingDescription" class="form-control"/>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="type" class="col-sm-2 control-label">Type</label>
-                        <div class="btn-group col-sm-8">
+                        <div class="btn-group col-sm-8" id="addSettingType">
                             <label class="setting-type btn btn-default btn-primary" rel="setting-default-div">Default</label>
                             <label class="setting-type btn btn-default" rel="setting-boolean-div">Boolean</label>
                             <label class="setting-type btn btn-default" rel="setting-array-div">Array</label>
@@ -51,12 +49,12 @@
                                 <div class="btn-group">
                                     <label class="setting-type-boolean btn btn-primary" rel="true">On</label>
                                     <label class="setting-type-boolean btn btn-default" rel="false">Off</label>
-                                    <input type="checkbox" name="setting-boolean" class="hidden">
+                                    <input id="addSettingBoolean" type="checkbox" name="setting-boolean" class="hidden">
                                 </div>
                             </div>
 
-                            <div  class="setting-array-div hidden">
-                                <ul id="array-values-list" class="list-unstyled" rel="0">
+                            <div class="setting-array-div hidden">
+                                <ul id="addSettingArray" class="list-unstyled" rel="0">
                                     <li>
                                         <div class="input-group">
                                             <input type="text" class="form-control" name="setting-array_0">
@@ -71,27 +69,23 @@
                             </div>
 
                             <div  class="setting-object-div hidden">
-                                <textarea id="yaml" class="form-control ng-isolate-scope" rows="12" cols="30" yml="settingService.setting.data.value"></textarea>
+                                <textarea id="addSettingObject" class="form-control ng-isolate-scope" rows="12" cols="30"></textarea>
                             </div>
 
                             <div class="setting-default-div">
-                                <input name="setting-default" type="text" class="form-control" />
+                                <input id="addSettingDefault" name="setting-default" type="text" class="form-control" />
                             </div>
                         </div>
                     </div>
 
-                    <div class="form-group no-margin-bottom">
+                    <div class="form-group no-margin-bottom" id="addSettingMessages">
                         <div class="col-sm-offset-2 col-sm-10">
                             <p class="alert alert-success no-margin-bottom hidden">Setting created successfully.</p>
                             <p class="alert alert-danger no-margin-bottom hidden"><strong>Creation failed</strong>. <span class="error-message"></span></p>
                         </div>
                     </div>
-
-                    <div>
-                        <p class="help-block">Setting value required!</p>
-                    </div>
                     <div class="modal-footer">
-                        <button class="btn btn-primary">Add</button>
+                        <button class="btn btn-primary" id="submitSetting" onclick="addSetting(event)">Add</button>
                         <button class="btn btn-danger" data-dismiss="modal">Close</button>
                     </div>
                 </form>
