@@ -16,6 +16,18 @@ $(document).ready(function(){
             $(this).siblings().toggleClass('btn-primary');
         }
     });
+    $('.setting-remove').on('click', function(event){
+        event.preventDefault();
+        var url = $(this).attr('url');
+        $this = $(this);
+        $.ajax({
+            url: url,
+            type: "DELETE",
+            success: function () {
+                $this.closest('tr').remove();
+            }
+        });
+    });
     $('.string').on('click', function(event){
         // ----- implement ajax request to change the setting
         event.preventDefault();

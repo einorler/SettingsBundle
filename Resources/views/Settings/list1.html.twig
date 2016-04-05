@@ -61,7 +61,9 @@
                                 <a href="#" class="btn btn-primary btn-xs" >
                                     <span class="glyphicon glyphicon-transfer"></span>
                                 </a>
-                                <a href="#" class="btn btn-danger btn-xs">
+                                <a href="#" url="{{
+                                        path('ongr_settings_setting_remove', {'name': data.name, 'profile': data.profile})
+                                    }}" class="btn btn-danger btn-xs setting-remove">
                                     <span class="glyphicon glyphicon-remove"></span>
                                 </a>
                             </td>
