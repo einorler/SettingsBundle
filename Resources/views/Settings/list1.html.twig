@@ -29,7 +29,7 @@
                             <td class=".col-xs-12 .col-md-8">
                                 <div class="settings-container">
                                     <div>
-                                        {% if data.type == 'boolean' %}
+                                        {% if data.type == 'bool' %}
                                             <div class="btn-group btn-group-sm">
                                                 <label class="boolean btn btn-default {% if data.data.value == true %}btn-primary{% endif %}" >On</label>
                                                 <label class="boolean btn btn-default {% if data.data.value == false %}btn-primary{% endif %}" >Off</label>
@@ -42,9 +42,13 @@
                                                 {% for element in data.data.value|slice(0,3) %}
                                                     <li>{{ element }}</li>
                                                 {% endfor %}
-                                                <li><a href="#" onclick="arrayHandleList(this, event, '{{ data.data.value|json_encode }}')">more</a></li>
+                                                {% if data.data.value|length >3 %}
+                                                    <li><a href="#" onclick="arrayHandleList(this, event, '{{ data.data.value|json_encode }}')">more</a></li>
+                                                {% endif %}
                                                 </ul>
                                             </div>
+                                        {% elseif data.type == 'object'%}
+                                            <p>{{ data.data.value }}</p>
                                         {% endif %}
                                     </div>
                                 </div>

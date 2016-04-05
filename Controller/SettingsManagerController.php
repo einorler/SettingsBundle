@@ -28,7 +28,7 @@ use Symfony\Component\Yaml\Parser;
 class SettingsManagerController extends Controller
 {
     /**
-     * Action for saving/seting setting values.
+     * Action for saving/setting setting values.
      *
      * @param Request $request
      *
@@ -48,22 +48,21 @@ class SettingsManagerController extends Controller
         $response['error'] = '';
 
         switch ($type) {
-            case 'Boolean':
+            case 'bool':
                 $value == 'true' ? $value = true : $value = false;
                 break;
-            case 'Default':
+            case 'default':
                 $value = htmlentities($value);
                 break;
-            case 'Object':
+            case 'object':
                 try {
-                    $value = $parser->parse($value);
+                    $value = json_encode($parser->parse($value));
                 } catch (\Exception $e) {
-                    $response['error'] = 'Passed setting value is not correct yaml';
-                    $response['code'] = 406;
+                    $response['error'] = 'Passed setting value does not contain valid yaml';
                     return new JsonResponse(json_encode($response));
                 }
                 break;
-            case 'Array':
+            case 'array':
                 foreach ($value as $key => $item) {
                     $value[$key] = htmlentities($item);
                 }
@@ -71,14 +70,10 @@ class SettingsManagerController extends Controller
         }
         try {
             foreach ($profiles as $profile) {
-                $manager->set($name, $value, $profile);
+                $manager->set($name, $description, $type, $value, $profile);
             }
         } catch (\Exception $e) {
             $response['error'] = 'Insertion failed: '.$e->getMessage();
-            $response['code'] = 406;
-        }
-        if (!isset($response['code'])) {
-            $response['code'] = 201;
         }
         return new JsonResponse(json_encode($response));
     }

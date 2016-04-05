@@ -1,3 +1,12 @@
+/*
+ * This file is part of the ONGR package.
+ *
+ * (c) NFQ Technologies UAB <info@nfq.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 $(document).ready(function(){
     $('#addSettingProfiles').multiselect();
     $('.boolean').on('click', function(){
@@ -59,14 +68,14 @@ $(document).ready(function(){
 });
 function stringUpdateClose(el, id){
     $container = $('.settings-container');
-    var text = jQuery(el).parent().next().val()
+    var text = escapeHTML(jQuery(el).parent().next().val());
     var newContent = '<a href="#" class="string" rel="'+id+'" onclick="stringUpdateChange(this, event)">'+text+'</a>';
     jQuery(el).parent().parent().html(newContent);
 };
 function stringUpdateChange(el, event){
     event.preventDefault();
     var id = jQuery(el).attr('rel');
-    var old = jQuery(el).text();
+    var old = escapeHTML(jQuery(el).text());
     var newContent = '<div class="input-group input-group-sm string-update">'
         +'<span class="input-group-btn">'
         +'<button class="btn btn-default string-update-save" >Save</button>'
@@ -103,7 +112,8 @@ function addArrayRemoveInput(el){
 }
 function addSetting(e){
     e.preventDefault();
-    $('#addSettingMessages').find('.alert').addClass('hidden');
+    var $messageBox = $('#addSettingMessages');
+    $messageBox.find('.alert').addClass('hidden');
     var url = $('#addSettingForm').attr('url');
     var name = $('#addSettingName').val();
     var profiles = $('#addSettingProfiles').val();
@@ -114,18 +124,22 @@ function addSetting(e){
 
     switch(type) {
         case 'Boolean':
+            type = 'bool';
             $('#addSettingBoolean').is(':checked') ? value = 'true' : value = 'false';
             break;
         case 'Default':
+            type = 'default';
             value = $('#addSettingDefault').val();
             break;
         case 'Array':
+            type = 'array';
             value = [];
             $('#addSettingArray').find('input').each(function () {
                 value.push(this.value);
             });
             break;
         case 'Object':
+            type = 'object';
             value = $('#addSettingObject').val();
             break;
     }
@@ -138,7 +152,11 @@ function addSetting(e){
     if(value == '' ) {
         errorMessage = errorMessage + 'You have to set the value of the setting';
     }
-    renderError('#addSettingMessages', errorMessage);
+    if(errorMessage != '') {
+        $messageBox.find('.error-message').text(errorMessage);
+        $messageBox.find('.alert-danger').toggleClass('hidden');
+        return
+    }
     var data = {
         setting_name: name,
         setting_profiles: profiles,
@@ -147,30 +165,42 @@ function addSetting(e){
         setting_value: value
     };
     var requestData = {data: JSON.stringify(data)};
-    //data = JSON.stringify(data);
-    //alert(data);
     $.ajax({
-        url: '/settings/setting/set?0=hjkfb&1=kjbf',
+        url: url,
         type: "POST",
         data: requestData,
         success: function (data) {
             data = JSON.parse(data);
-            renderError('#addSettingMessages', data.error);
-            if(data.code == 201) {
-                $('#addSettingMessages').find('.alert-success').toggleClass('hidden');
+            if(data.error != '') {
+                $messageBox.find('.error-message').text(data.error);
+                $messageBox.find('.alert-danger').toggleClass('hidden');
+                return
             }
+            $messageBox.find('.alert-success').toggleClass('hidden');
             $('#addSettingForm').find('input').val('');
             $('#addSettingForm').find('textarea').val('');
+            $('#addSettingArray').html('');
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-            alert('Užlausa nepavyko : ' + errorThrown);
+            $messageBox.find('.error-message').text(errorThrown);
+            $messageBox.find('.alert-danger').toggleClass('hidden');
+            return
         }
     });
 }
-function renderError(blockId, errorMessage) {
-    if(errorMessage != '') {
-        $(blockId).find('.error-message').text(errorMessage);
-        $(blockId).find('.alert-danger').toggleClass('hidden');
-        return
-    }
+function escapeHTML(string) {
+    var htmlEscapes = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#x27;',
+        '/': '&#x2F;'
+    };
+
+    var htmlEscaper = /[&<>"'\/]/g;
+
+    return ('' + string).replace(htmlEscaper, function(match) {
+        return htmlEscapes[match];
+    });
 }
