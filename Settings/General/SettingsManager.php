@@ -156,6 +156,25 @@ class SettingsManager
     }
 
     /**
+     * Returns setting model by id
+     *
+     * @param string $id
+     *
+     * @throws \UnexpectedValueException
+     *
+     * @return Setting
+     */
+    public function getById($id)
+    {
+        $setting = $this->repo->find($id);
+        if ($setting === null) {
+            throw new \UnexpectedValueException();
+        }
+
+        return $setting;
+    }
+
+    /**
      * Creates new setting object.
      *
      * @param string $name

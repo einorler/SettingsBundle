@@ -11,6 +11,7 @@
 
 namespace ONGR\SettingsBundle\Controller;
 
+use ONGR\SettingsBundle\Document\Setting;
 use ONGR\SettingsBundle\Settings\General\SettingsManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
@@ -51,7 +52,7 @@ class SettingsManagerController extends Controller
             case 'bool':
                 $value == 'true' ? $value = true : $value = false;
                 break;
-            case 'default':
+            case 'string':
                 $value = htmlentities($value);
                 break;
             case 'object':
@@ -93,7 +94,7 @@ class SettingsManagerController extends Controller
         $setting = $this->getSettingsManager()->get($name, $profile, false, $request->query->get('type', 'string'));
 
         return $this->render(
-            'ONGRSettingsBundle:Settings:edit.html.twig',
+            'ONGRSettingsBundle:Settings:edit1.html.twig',
             [
                 'setting' => $setting,
             ]
@@ -116,18 +117,22 @@ class SettingsManagerController extends Controller
         if (empty($content)) {
             return new Response(Response::$statusTexts[400], 400);
         }
-
         $content = json_decode($content, true);
         if ($content === null || empty($content['setting'])) {
             return new Response(Response::$statusTexts[400], 400);
         }
 
         $type = isset($content['setting']['type']) ? $content['setting']['type'] : 'string';
+        $value = $content['setting']['data']['value'];
+        if ($type == Setting::TYPE_BOOLEAN) {
+            $value == 'true' ? $value = true : $value = false;
+        }
 
         $manager = $this->getSettingsManager();
         $model = $manager->get($name, $profile, false, $type);
+        $model->setType($type);
 
-        $model->setData($content['setting']['data']);
+        $model->setData((object)['value' => $value]);
 
         if (isset($content['setting']['description'])) {
             $model->setDescription($content['setting']['description']);
@@ -174,8 +179,11 @@ class SettingsManagerController extends Controller
 
         $setting = $settingsManager->get($name, $from);
 
+
         foreach ($to as $profile) {
-            $this->getSettingsManager()->duplicate($setting, $profile);
+            if ($from != $profile) {
+                $this->getSettingsManager()->duplicate($setting, $profile);
+            }
         }
 
         return new Response();

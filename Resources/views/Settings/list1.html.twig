@@ -56,7 +56,9 @@
                             </td>
 
                             <td class="col-xs-3">
-                                <a href="#" class="btn btn-primary btn-xs">
+                                <a href="{{
+                                    path('ongr_settings_setting_edit', {'name': data.name, 'profile': data.profile})
+                                    }}" class="btn btn-primary btn-xs">
                                     <span class="glyphicon glyphicon-edit"></span>
                                 </a>
                                 <a href="#" class="btn btn-primary btn-xs duplicateTrigger" url="{{
