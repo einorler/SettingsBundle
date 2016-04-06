@@ -1,0 +1,29 @@
+<div class="modal fade" id="duplicateSettingModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Duplicate <span id="duplicateName"></span></h3>
+            </div>
+            <div class="modal-body">
+                <form name="duplicateForm" id="duplicateForm">
+                    Duplicate from <span id="duplicateFrom"></span> to
+                    <select id="duplicateSettingProfiles" multiple="multiple" name="settingProfile" class="form-control">
+                        {% for profile in profiles %}
+                            <option value="{{ profile.name }}">{{ profile.name }}</option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </div>
+            <div class="form-group no-margin-bottom" id="duplicateSettingMessages">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <p class="alert alert-success no-margin-bottom hidden">Setting duplicated successfully.</p>
+                    <p class="alert alert-danger no-margin-bottom hidden"><strong>Duplication failed.</strong> <span class="error-message"></span></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="duplicateSubmit">Duplicate</button>
+                <button class="btn btn-danger" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -7,6 +7,7 @@
 {% endblock %}
 {% block main %}
     {% include 'ONGRSettingsBundle:Settings:inc/addSettingModal.html.twig' %}
+    {% include 'ONGRSettingsBundle:Settings:inc/duplicateModal.html.twig'%}
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12">
@@ -58,11 +59,13 @@
                                 <a href="#" class="btn btn-primary btn-xs">
                                     <span class="glyphicon glyphicon-edit"></span>
                                 </a>
-                                <a href="#" class="btn btn-primary btn-xs" >
+                                <a href="#" class="btn btn-primary btn-xs duplicateTrigger" url="{{
+                                    path('ongr_settings_setting_copy', {'name': data.name, 'from': data.profile})
+                                    }}" data-toggle="modal" data-target="#duplicateSettingModal" profile="{{ data.profile }}" name="{{ data.name }}">
                                     <span class="glyphicon glyphicon-transfer"></span>
                                 </a>
                                 <a href="#" url="{{
-                                        path('ongr_settings_setting_remove', {'name': data.name, 'profile': data.profile})
+                                    path('ongr_settings_setting_remove', {'name': data.name, 'profile': data.profile})
                                     }}" class="btn btn-danger btn-xs setting-remove">
                                     <span class="glyphicon glyphicon-remove"></span>
                                 </a>

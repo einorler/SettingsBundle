@@ -9,6 +9,7 @@
 
 $(document).ready(function(){
     $('#addSettingProfiles').multiselect();
+    $('#duplicateSettingProfiles').multiselect();
     $('.boolean').on('click', function(){
         // ----- implement ajax request to change the setting
         if(!$(this).hasClass('btn-primary')) {
@@ -76,6 +77,42 @@ $(document).ready(function(){
             +'</div>'
             +'</li>';
         $('#addSettingArray').append(render);
+    });
+    $('.duplicateTrigger').on('click', function(){
+        var name = $(this).attr('name');
+        var url = $(this).attr('url');
+        var profile = $(this).attr('profile');
+        $('#duplicateName').text(name);
+        $('#duplicateFrom').text(profile);
+        $('#duplicateSubmit').attr('url', url);
+        $('#duplicateSettingMessages').find('.alert').addClass('hidden');
+    });
+    $('#duplicateSubmit').on('click', function(event){
+        event.preventDefault();
+        var $messageBox = $('#duplicateSettingMessages');
+        $messageBox.find('.alert').addClass('hidden');
+        var url = $(this).attr('url');
+        var errorMessage = '';
+        var duplicateProfiles = $('#duplicateSettingProfiles').val();
+        if(duplicateProfiles == null) {
+            errorMessage = 'At least one profile has to be set. ';
+            $messageBox.find('.error-message').text(errorMessage);
+            $messageBox.find('.alert-danger').toggleClass('hidden');
+            return
+        }
+        var requestData = {to_profiles: JSON.stringify(duplicateProfiles)};
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: requestData,
+            success: function () {
+                $messageBox.find('.alert-success').toggleClass('hidden');
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                $messageBox.find('.error-message').text(errorThrown);
+                $messageBox.find('.alert-danger').toggleClass('hidden');
+            }
+        });
     });
 });
 function stringUpdateClose(el, id){
@@ -196,7 +233,6 @@ function addSetting(e){
         error: function (XMLHttpRequest, textStatus, errorThrown) {
             $messageBox.find('.error-message').text(errorThrown);
             $messageBox.find('.alert-danger').toggleClass('hidden');
-            return
         }
     });
 }

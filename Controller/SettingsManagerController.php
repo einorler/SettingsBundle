@@ -159,20 +159,24 @@ class SettingsManagerController extends Controller
     /**
      * Copies a setting to a new profile.
      *
-     * @param string $name
-     * @param string $from
-     * @param string $to
+     * @param Request $request
+     * @param string  $name
+     * @param string  $from
      *
      * @return Response
      * @throws NotFoundHttpException
      */
-    public function copyAction($name, $from, $to)
+    public function copyAction(Request $request, $name, $from)
     {
+        $to = json_decode($request->request->get('to_profiles'), true);
+
         $settingsManager = $this->getSettingsManager();
 
         $setting = $settingsManager->get($name, $from);
 
-        $this->getSettingsManager()->duplicate($setting, $to);
+        foreach ($to as $profile) {
+            $this->getSettingsManager()->duplicate($setting, $profile);
+        }
 
         return new Response();
     }
