@@ -185,7 +185,10 @@ class SettingsController extends Controller
             $setting->setType($data['type']);
             $setting->setValue($data['value']);
 
+            $setting->setProfile($data['profile']);
+
             $manager->persist($setting);
+
             $manager->commit();
 
             return new JsonResponse(['error' => false]);
