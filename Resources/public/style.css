@@ -9,6 +9,9 @@ body {
   padding-top: 20px;
   padding-bottom: 20px; }
 
+.profile-select-pointer {
+  cursor: pointer; }
+
 table.dataTable {
   clear: both;
   margin-top: 6px !important;
