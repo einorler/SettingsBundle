@@ -39,7 +39,7 @@ class CacheClearCommandTest extends AbstractElasticsearchTestCase
         );
 
         $this->assertContains(
-            'Cache has been cleared successfully!',
+            '`foo` has been successfully cleared from cache',
             $commandTester->getDisplay()
         );
         $this->assertFalse($cache->contains('foo'));
@@ -60,7 +60,7 @@ class CacheClearCommandTest extends AbstractElasticsearchTestCase
         );
 
         $this->assertContains(
-            'Cache does not contain the given setting',
+            'Cache does not contain a setting named `foo`',
             $commandTester->getDisplay()
         );
     }
