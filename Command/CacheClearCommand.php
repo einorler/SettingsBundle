@@ -43,8 +43,8 @@ class CacheClearCommand extends ContainerAwareCommand
     {
         $io = new SymfonyStyle($input, $output);
 
-        if (!$this->getContainer()->has('ongr_settings.settings_manager')) {
-            throw new \RuntimeException('Settings manager service not available');
+        if (!$this->getContainer()->has('ong_settings.cache_provider')) {
+            throw new \RuntimeException('`ong_settings.cache_provider` service not available');
         }
 
         $cache = $this->getContainer()->get('ong_settings.cache_provider');
