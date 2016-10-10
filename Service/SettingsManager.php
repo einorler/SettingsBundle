@@ -288,7 +288,7 @@ class SettingsManager
             $this->getActiveExperimentProfilesCookie()->setClear(true);
         }
 
-        $this->eventDispatcher->dispatch(Events::PRE_UPDATE, new SettingActionEvent($name, $data, $setting));
+        $this->eventDispatcher->dispatch(Events::POST_UPDATE, new SettingActionEvent($name, $data, $setting));
 
         return $setting;
     }
@@ -304,7 +304,7 @@ class SettingsManager
     public function delete($name)
     {
         if ($this->has($name)) {
-            $this->eventDispatcher->dispatch(Events::PRE_UPDATE, new SettingActionEvent($name, [], null));
+            $this->eventDispatcher->dispatch(Events::PRE_DELETE, new SettingActionEvent($name, [], null));
 
             $setting = $this->get($name);
             $this->cache->delete($name);
@@ -315,7 +315,7 @@ class SettingsManager
                 $this->getActiveExperimentProfilesCookie()->setClear(true);
             }
 
-            $this->eventDispatcher->dispatch(Events::PRE_UPDATE, new SettingActionEvent($name, $response, $setting));
+            $this->eventDispatcher->dispatch(Events::POST_DELETE, new SettingActionEvent($name, $response, $setting));
 
             return $response;
         }
