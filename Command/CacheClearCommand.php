@@ -51,12 +51,12 @@ class CacheClearCommand extends ContainerAwareCommand
         $setting = $input->getArgument('setting_name');
 
         if (!$cache->contains($setting)) {
-            $io->note('Cache does not contain the given setting');
+            $io->note(sprintf('Cache does not contain a setting named `%s`', $setting));
             return;
         }
 
         $cache->delete($setting);
 
-        $io->success('Cache has been cleared successfully!');
+        $io->success(sprintf('`%s` has been successfully cleared from cache', $setting));
     }
 }
