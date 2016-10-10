@@ -17,15 +17,26 @@ to override the `ong_settings.cache_provider` in your projects `services.yml`
 file. Here is an example of the configuration:
 
 ```yaml
-
-ong_settings.cache_provider:
-        class: Doctrine\Common\Cache\PhpFileCache
-        arguments: ["%kernel.cache_dir%/ongr/settings", ".ongr.settings_cache.php"]
-
+        
+services:        
+    memcache:
+        class: Memcache
+        calls:
+            - [ addServer, [ "127.0.0.1", 11211 ]]
+            - [ addServer, [ "127.0.0.2", 11211 ]]
+            
+    ong_settings.cache_provider:
+      class: Doctrine\Common\Cache\MemcacheCache
+      calls:
+          - [setMemcache, ["@memcache"]]
 ```
 
 ## Writing an event listener
 
-The second option is to write an event listener and 
+The second option is to write an event listener that would listen to the
+`ONGR\SettingsBundle\Event\Evens::PRE_UPDATE` event and would call the 
+`ongr:settings:cache:clear` command from the other servers. Setting name,
+that should be provided to the command as an argument, can be fetched from 
+an event. 
 
 [1]: https://symfony.com/doc/current/bundles/DoctrineCacheBundle/index.html
