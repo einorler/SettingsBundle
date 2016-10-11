@@ -38,3 +38,7 @@ services:
         arguments: ["@ongr_settings.cookie.active_profiles", "@ongr_settings.settings_manager"]
         tags:
             - { name: kernel.event_listener, event: kernel.request }
+
+    ongr_settings.experiments_manager:
+        class: ONGR\SettingsBundle\Service\ExperimentsManager
+        arguments: ["@es.manager.settings.experiment", "@event_dispatcher", "@ong_settings.cache_provider"]

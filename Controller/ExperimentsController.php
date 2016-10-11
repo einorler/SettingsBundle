@@ -47,4 +47,18 @@ class ExperimentsController extends Controller
 
         ]);
     }
+
+    /**
+     * Returns a json list of experiments
+     *
+     * @return JsonResponse
+     */
+    public function getFullExperimentsAction()
+    {
+        $manager = $this->get('ongr_settings.experiments_manager');
+
+        return new JsonResponse(
+            ['count' => 1, 'documents' => [['active' => true, 'name' => 'test', 'profiles' => 'foo, bar']]]
+        );
+    }
 }

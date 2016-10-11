@@ -13,6 +13,7 @@ namespace ONGR\SettingsBundle\Document;
 
 use ONGR\ElasticsearchBundle\Annotation as ES;
 use ONGR\FilterManagerBundle\SerializableInterface;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 /**
  * @ES\Document(type="experiment")
@@ -76,6 +77,13 @@ class Experiment implements SerializableInterface
      * @ES\Property(type="string", options={"index"="not_analyzed"})
      */
     private $device = [];
+
+    /**
+     * @var bool
+     *
+     * @ES\Property(type="bool")
+     */
+    private $active;
 
     /**
      * @var string
@@ -189,7 +197,23 @@ class Experiment implements SerializableInterface
     }
 
     /**
-     * @return string
+     * @return bool
+     */
+    public function getActive()
+    {
+        return $this->active;
+    }
+
+    /**
+     * @param bool $active
+     */
+    public function setActive($active)
+    {
+        $this->active = $active;
+    }
+
+    /**
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -201,7 +225,7 @@ class Experiment implements SerializableInterface
      */
     public function setCreatedAt($createdAt)
     {
-        $this->createdAt = $createdAt;
+        $this->createdAt = new DateTime($createdAt);
     }
 
     public function getSerializableData()

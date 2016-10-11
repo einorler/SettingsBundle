@@ -311,10 +311,10 @@ $(document).ready(function () {
         }
     } );
 
-    //Profile section
+    //Experiment section
     var experimentTable = $('#experiments').DataTable( {
         ajax: {
-            url: Routing.generate('ongr_settings_profiles_get_all_detailed'),
+            url: Routing.generate('ongr_settings_experiments_get_all_detailed'),
             dataSrc: 'documents'
         },
         stateSave: true,
@@ -322,7 +322,7 @@ $(document).ready(function () {
         columns: [
             { data: 'name' },
             { data: 'name' },
-            { data: 'settings' },
+            { data: 'profiles' },
             {}
         ],
         columnDefs: [
@@ -355,11 +355,9 @@ $(document).ready(function () {
                 "targets": 3,
                 "data": null,
                 "orderable": false,
-                // "render": function(data, type, row) {
-                //     return '<a class="copy-link btn btn-primary btn-xs" data-toggle="modal">Copy link</a>&nbsp;';
-                // },
-                "defaultContent":
-                    '<a class="copy-link btn btn-primary btn-xs" data-toggle="modal">Copy link</a>&nbsp;'
+                "render": function ( data, type, row ) {
+                    return '<a class="edit btn btn-primary btn-xs" data-toggle="modal" data-target="#experiment-details">Details</a>&nbsp;<a class="edit btn btn-primary btn-xs" data-toggle="modal" data-target="#experiment-edit">Edit</a>&nbsp;<a class="delete delete-setting btn btn-danger btn-xs" data-name="'+row['name']+'">Delete</a>'
+                }
             } ]
     } );
 });

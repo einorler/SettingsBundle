@@ -65,3 +65,9 @@ ongr_settings_settings_delete:
 ongr_settings_experiments:
     path: /experiments
     defaults: { _controller: ONGRSettingsBundle:Experiments:list }
+
+ongr_settings_experiments_get_all_detailed:
+    path: /experiments/get_all_detailed
+    defaults: { _controller: ONGRSettingsBundle:Experiments:getFullExperiments }
+    options:
+        expose: true
