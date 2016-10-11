@@ -311,4 +311,55 @@ $(document).ready(function () {
         }
     } );
 
+    //Profile section
+    var experimentTable = $('#experiments').DataTable( {
+        ajax: {
+            url: Routing.generate('ongr_settings_profiles_get_all_detailed'),
+            dataSrc: 'documents'
+        },
+        stateSave: true,
+        order: [[ 1, "asc" ]],
+        columns: [
+            { data: 'name' },
+            { data: 'name' },
+            { data: 'settings' },
+            {}
+        ],
+        columnDefs: [
+            {
+                "targets": 0,
+                "orderable": false,
+                "render": function ( data, type, row ) {
+                    var className = 'toggle-profile';
+                    var label = $('<label/>').addClass('btn btn-default').addClass(className)
+                        .addClass(className + '-' + row['name']).attr('data-name', row['name']);
+                    var on = label.clone().html('ON').attr('data-element', className + '-' + row['name']);
+                    var off = label.clone().html('OFF').attr('data-element', className + '-' + row['name']);
+
+                    if (row['active'] == true) {
+                        on.addClass('btn-primary');
+                    } else {
+                        off.addClass('btn-primary');
+                    }
+
+                    var cell = $('<div/>').addClass('btn-group btn-group-sm').append(on, off);
+
+                    return cell.prop('outerHTML');
+                }
+            },
+            {
+                "targets": 2,
+                "orderable": false,
+            },
+            {
+                "targets": 3,
+                "data": null,
+                "orderable": false,
+                // "render": function(data, type, row) {
+                //     return '<a class="copy-link btn btn-primary btn-xs" data-toggle="modal">Copy link</a>&nbsp;';
+                // },
+                "defaultContent":
+                    '<a class="copy-link btn btn-primary btn-xs" data-toggle="modal">Copy link</a>&nbsp;'
+            } ]
+    } );
 });
