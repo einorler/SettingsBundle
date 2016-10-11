@@ -92,7 +92,10 @@ class ExperimentsManager
 
         // TODO: Change the execute method to an array formation
         $experiments = $this->repo->execute($search, Result::RESULTS_ARRAY);
-        $this->cache->save(self::EXPERIMENTS_CACHE_NAME, $experiments);
+
+        if (!empty($experiments)) {
+            $this->cache->save(self::EXPERIMENTS_CACHE_NAME, $experiments);
+        }
 
         return $experiments;
     }
