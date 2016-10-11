@@ -322,6 +322,7 @@ $(document).ready(function () {
         columns: [
             { data: 'name' },
             { data: 'name' },
+            { data: 'client'},
             { data: 'profile' },
             {}
         ],
@@ -350,13 +351,34 @@ $(document).ready(function () {
             {
                 "targets": 2,
                 "orderable": false,
+                "render": function (data, type, row) {
+                    var target = '';
+
+                    if (typeof(row['os']) !== 'undefined') {
+                        target += 'os = ' + JSON.stringify(row['os']) + '; ';
+                    }
+
+                    if (typeof(row['device']) !== 'undefined') {
+                        target += 'device = ' + JSON.stringify(row['device']) + '; ';
+                    }
+
+                    if (typeof(row['client']) !== 'undefined') {
+                        target += 'client = ' + JSON.stringify(row['client']) + '; ';
+                    }
+
+                    return target;
+                }
             },
             {
                 "targets": 3,
+                "orderable": false,
+            },
+            {
+                "targets": 4,
                 "data": null,
                 "orderable": false,
                 "render": function ( data, type, row ) {
-                    return '<a class="edit btn btn-primary btn-xs" data-toggle="modal" data-target="#experiment-details">Details</a>&nbsp;<a class="edit btn btn-primary btn-xs" data-toggle="modal" data-target="#experiment-edit">Edit</a>&nbsp;<a class="delete delete-setting btn btn-danger btn-xs" data-name="'+row['name']+'">Delete</a>'
+                    return '<a class="edit btn btn-primary btn-xs" data-toggle="modal" data-target="#experiment-edit">Edit</a>&nbsp;<a class="delete delete-setting btn btn-danger btn-xs" data-name="'+row['name']+'">Delete</a>'
                 }
             } ]
     } );
