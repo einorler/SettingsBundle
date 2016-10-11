@@ -61,3 +61,7 @@ ongr_settings_settings_delete:
     defaults: { _controller: ONGRSettingsBundle:Settings:delete }
     options:
         expose: true
+
+ongr_settings_experiments:
+    path: /experiments
+    defaults: { _controller: ONGRSettingsBundle:Experiments:list }
