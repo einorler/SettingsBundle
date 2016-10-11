@@ -14,6 +14,7 @@ namespace ONGR\SettingsBundle\Service;
 use Doctrine\Common\Cache\CacheProvider;
 use ONGR\CookiesBundle\Cookie\Model\GenericCookie;
 use ONGR\ElasticsearchBundle\Result\Aggregation\AggregationValue;
+use ONGR\ElasticsearchBundle\Result\Result;
 use ONGR\ElasticsearchDSL\Aggregation\Bucketing\TermsAggregation;
 use ONGR\ElasticsearchDSL\Aggregation\Metric\TopHitsAggregation;
 use ONGR\ElasticsearchDSL\Query\MatchAllQuery;
@@ -89,7 +90,8 @@ class ExperimentsManager
             return $this->cache->fetch(self::EXPERIMENTS_CACHE_NAME);
         }
 
-        $experiments = $this->repo->findArray($search);
+        // TODO: Change the execute method to an array formation
+        $experiments = $this->repo->execute($search, Result::RESULTS_ARRAY);
         $this->cache->save(self::EXPERIMENTS_CACHE_NAME, $experiments);
 
         return $experiments;

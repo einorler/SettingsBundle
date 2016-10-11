@@ -55,10 +55,10 @@ class ExperimentsController extends Controller
      */
     public function getFullExperimentsAction()
     {
-        $manager = $this->get('ongr_settings.experiments_manager');
+        $experiments = $this->get('ongr_settings.experiments_manager')->getAllExperimentsArray();
 
         return new JsonResponse(
-            ['count' => 1, 'documents' => [['active' => true, 'name' => 'test', 'profiles' => 'foo, bar']]]
+            ['count' => 1, 'documents' => $experiments]
         );
     }
 }
