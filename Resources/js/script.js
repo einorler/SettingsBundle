@@ -322,7 +322,7 @@ $(document).ready(function () {
         columns: [
             { data: 'name' },
             { data: 'name' },
-            { data: 'profiles' },
+            { data: 'profile' },
             {}
         ],
         columnDefs: [
