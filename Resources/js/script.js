@@ -360,4 +360,11 @@ $(document).ready(function () {
                 }
             } ]
     } );
+
+    var newExperimentButton = $('<button/>').html('Add new experiment').addClass('btn btn-success btn-sm').attr(
+        {
+            'id': 'new-experiment-button',
+        }
+    );
+    $('#experiments_filter').append(newExperimentButton.prop('outerHTML'));
 });
