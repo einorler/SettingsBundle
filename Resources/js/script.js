@@ -389,4 +389,26 @@ $(document).ready(function () {
         }
     );
     $('#experiments_filter').append(newExperimentButton.prop('outerHTML'));
+
+    $('#new-experiment-button').on('click', function(){
+        $('#experiment-action-title').text('New experiment');
+        $('#experiment-form-modal').modal();
+        reloadProfiles();
+        reloadTargets();
+    });
+
+    function reloadTargets(select) {
+        var html = '';
+        $.post(Routing.generate('ongr_settings_experiments_get_targets'), function (data) {
+            // data.forEach(function (target, key) {
+            for (var key in data) {
+                html += '<label>' + key + '</label>&nbsp<select multiple name="experiment[' + key + ']">';
+                for (var target in data[key]) {
+                    html += '<option value="' + target + '">' + target + '</option>';
+                }
+                html += '</select>';
+            }
+            $('#targets-container').html(html);
+        });
+    }
 });

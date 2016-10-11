@@ -71,3 +71,9 @@ ongr_settings_experiments_get_all_detailed:
     defaults: { _controller: ONGRSettingsBundle:Experiments:getFullExperiments }
     options:
         expose: true
+
+ongr_settings_experiments_get_targets:
+    path: /experiments/get_targets
+    defaults: { _controller: ONGRSettingsBundle:Experiments:getTargets }
+    options:
+        expose: true

@@ -22,68 +22,17 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label" for="experiment_description">Description</label>
-                        <div class="col-sm-10">
-                            <textarea id="experiment-description-input" name="experiment[description]"
-                                      class="form-control"></textarea>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label" for="experiment_name">Profiles</label>
+                        <label class="col-sm-2 control-label" for="setting_name">Profiles</label>
                         <div class="col-sm-8">
                             <div id="profiles-container" class="pb-5">
-                                <i id="profiles-loader" class="fa fa-refresh fa-spin fa-2x fa-fw"></i>
                                 <div class="checkbox"></div>
-                                <a href="javascript:" id="select-all-profiles">Select all</a>
-                                <a href="javascript:" class="btn btn-xs btn-success" id="add-new-profile-show-form">Add
-                                    new profile +</a>
-                            </div>
-                            <div class="form-group" id="add-new-profile-container" style="display: none;">
-                                <div id="add-profile-div" class="btn-group col-sm-8">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" id="add-new-profile-input"
-                                               placeholder="Type to add new profile">
-                                        <span id="add-new-profile" class="input-group-btn">
-                                            <label class="btn btn-success" type="button">
-                                                <i class="glyphicon glyphicon-plus"></i>
-                                            </label>
-                                        </span>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
-
                     <div class="form-group">
-                        <input type="hidden" id="experiment-type-input" name="experiment[type]" value="bool" />
-                        <input type="hidden" id="experiment-value-input"  name="experiment[value]" value="0" />
-                        <label class="col-sm-2 control-label" for="experiment_name">Value<span class="required">*</span></label>
-                        <div class="btn-group col-sm-8">
-                            <ul id="experiment-value-tabs" class="nav nav-tabs" role="tablist">
-                                <li role="presentation">
-                                    <a href="#string-value" aria-controls="string-value" role="tab" data-value="string" data-toggle="tab">string</a>
-                                </li>
-                                <li role="presentation" class="active">
-                                    <a href="#bool-value" aria-controls="bool-value" role="tab" data-value="bool" data-toggle="tab">bool</a>
-                                </li>
-                                <li role="presentation">
-                                    <a href="#yaml-value" aria-controls="yaml-value" role="tab" data-value="yaml" data-toggle="tab">yaml</a>
-                                </li>
-                            </ul>
-                            <div class="tab-content">
-                                <div role="tabpanel" class="tab-pane" id="string-value">
-                                    <input type="text" id="string-value-input" name="string-value" class="form-control" placeholder="Enter string" value=""/>
-                                </div>
-                                <div role="tabpanel" class="tab-pane active" id="bool-value">
-                                    <div class="btn-group btn-group-sm">
-                                        <input type="hidden" id="bool-value-input" name="string-value" value="0"/>
-                                        <label data-value="1" class="bool-value-input-1 bool-value-input btn btn-default">ON</label>
-                                        <label data-value="0" class="bool-value-input-0 bool-value-input btn btn-default btn-primary">OFF</label>
-                                    </div>
-                                </div>
-                                <div role="tabpanel" class="tab-pane" id="yaml-value">
-                                    <textarea id="yaml-value-input" name="yaml-value-input" class="form-control"></textarea>
-                                </div>
+                        <label class="col-sm-2 control-label" for="experiment_name">Targets</label>
+                        <div class="col-sm-8">
+                            <div id="targets-container" class="pb-5">
                             </div>
                         </div>
                     </div>

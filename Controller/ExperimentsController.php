@@ -12,6 +12,7 @@
 namespace ONGR\SettingsBundle\Controller;
 
 use DeviceDetector\DeviceDetector;
+use DeviceDetector\Parser\Device\DeviceParserAbstract;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -60,5 +61,18 @@ class ExperimentsController extends Controller
         return new JsonResponse(
             ['count' => 1, 'documents' => $experiments]
         );
+    }
+
+    /**
+     * Returns a json list of targets for experiment
+     *
+     * @return JsonResponse
+     */
+    public function getTargetsAction()
+    {
+        $targets = [];
+        $targets['devices'] = DeviceParserAbstract::getAvailableDeviceTypes();
+
+        return new JsonResponse($targets);
     }
 }
