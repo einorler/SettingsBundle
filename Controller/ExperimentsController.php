@@ -12,7 +12,11 @@
 namespace ONGR\SettingsBundle\Controller;
 
 use DeviceDetector\DeviceDetector;
+use DeviceDetector\Parser\Client\Browser;
+use DeviceDetector\Parser\Client\ClientParserAbstract;
 use DeviceDetector\Parser\Device\DeviceParserAbstract;
+use DeviceDetector\Parser\OperatingSystem;
+use DeviceDetector\Parser\ParserAbstract;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -71,7 +75,37 @@ class ExperimentsController extends Controller
     public function getTargetsAction()
     {
         $targets = [];
-        $targets['devices'] = DeviceParserAbstract::getAvailableDeviceTypes();
+        $targets['Devices'] = [
+            'desktop',
+            'smartphone',
+            'tablet',
+            'car browser',
+            'console',
+            'tv',
+        ];
+        $targets['Clients'] = [
+            'Firefox',
+            'Safari',
+            'Chrome',
+            'Opera',
+            'Edge',
+            'IE Mobile',
+            'Internet Explorer',
+            'Mobile Safari',
+            'Android Browser',
+            'Chrome Mobile',
+            'Chrome Mobile iOS',
+            'Opera Mobile',
+            'UC Browser',
+        ];
+        $targets['OS'] = [
+            'Mac',
+            'Windows',
+            'iOS',
+            'Android',
+            'Ubuntu',
+            'Debian',
+        ];
 
         return new JsonResponse($targets);
     }

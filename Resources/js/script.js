@@ -398,17 +398,39 @@ $(document).ready(function () {
     });
 
     function reloadTargets(select) {
+        var $form = $('#experiment-form');
         var html = '';
+        $form.find('.target-div').remove();
         $.post(Routing.generate('ongr_settings_experiments_get_targets'), function (data) {
             // data.forEach(function (target, key) {
             for (var key in data) {
-                html += '<label>' + key + '</label>&nbsp<select multiple name="experiment[' + key + ']">';
+                html += '' +
+                    '<div class="form-group target-div">' +
+                        '<label class="col-sm-2 control-label" for="experiment_name">' + key + '</label>' +
+                        '<div class="col-sm-8">' +
+                            '<div id="' + key + '-container" class="pb-5">' +
+                                '<div class="checkbox"><table class="table"><tbody>';
+                var i = 0;
+                html += '<tr>';
                 for (var target in data[key]) {
-                    html += '<option value="' + target + '">' + target + '</option>';
+                    html += appendNewTarget(data[key][target], key, select);
+                    if (i++ == 2) {
+                        i = 0;
+                        html += '</tr><tr>';
+                    }
                 }
-                html += '</select>';
+                html += '</tr>';
+                html += '</tbody></table></div></div></div></div>';
             }
-            $('#targets-container').html(html);
+            $form.append(html);
         });
+    }
+
+    function appendNewTarget(element, key, check) {
+        var checked = '';
+        if (check) {
+            checked = 'checked="checked"';
+        }
+        return '<td style="border: 0;"><label class="profile-choice"><input type="checkbox" '+checked+' name="experiment[' + key + '][]" value="'+element+'">'+element+'</label></td>';
     }
 });
