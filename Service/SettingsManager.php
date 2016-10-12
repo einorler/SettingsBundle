@@ -82,6 +82,13 @@ class SettingsManager
     private $activeProfilesList = [];
 
     /**
+     * Active experiments setting name to store in the cache engine.
+     *
+     * @var string
+     */
+    private $activeExperimentsSettingName;
+
+    /**
      * @param Repository               $repo
      * @param EventDispatcherInterface $eventDispatcher
      */
@@ -164,6 +171,22 @@ class SettingsManager
     public function appendActiveProfilesList(array $activeProfilesList)
     {
         $this->activeProfilesList = array_merge($this->activeProfilesList, $activeProfilesList);
+    }
+
+    /**
+     * @return string
+     */
+    public function getActiveExperimentsSettingName()
+    {
+        return $this->activeExperimentsSettingName;
+    }
+
+    /**
+     * @param string $activeExperimentsSettingName
+     */
+    public function setActiveExperimentsSettingName($activeExperimentsSettingName)
+    {
+        $this->activeExperimentsSettingName = $activeExperimentsSettingName;
     }
 
     /**
@@ -452,5 +475,9 @@ class SettingsManager
         $experiments = $this->repo->findBy(['type' => 'experiment']);
 
         return $experiments;
+    }
+
+    public function getActiveExperiments() {
+
     }
 }

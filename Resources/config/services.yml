@@ -5,6 +5,7 @@ parameters:
         http_only: false
 
     ongr_settings.active_profiles: ongr_active_profiles
+    ongr_settings.active_experiments: ongr_active_experiments
 
 services:
     ongr_settings.cookie.active_profiles:
