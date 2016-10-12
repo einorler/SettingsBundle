@@ -59,25 +59,28 @@ $(document).ready(function () {
     );
     $('#settings_filter').append(newSettingButton.prop('outerHTML'));
 
-    function appendNewProfile(element, check) {
+    function appendNewProfile(element, type, check) {
         var checked = '';
         if (check) {
             checked = 'checked="checked"';
         }
-        var input = '<label class="profile-choice"><input type="checkbox" '+checked+' name="setting[profile][]" value="'+element+'">'+element+'</label>';
+        var input = '<label class="profile-choice"><input type="checkbox" '+checked+' name="'+type+'[profile][]" value="'+element+'">'+element+'</label>';
         $('#profiles-container .checkbox').append(input);
     }
 
-    function reloadProfiles(select) {
+    function reloadProfiles(select, formType) {
+        if (formType !== 'experiment') {
+            formType = 'setting';
+        }
         $('#profiles-loader').show();
         $('#profiles-container .checkbox').html('');
         $.post(Routing.generate('ongr_settings_profiles_get_all'), function (data) {
             $('#profiles-loader').hide();
             data.forEach(function (element) {
                 if ($.inArray(element, select) >  -1) {
-                    appendNewProfile(element, true);
+                    appendNewProfile(element, formType, true);
                 } else {
-                    appendNewProfile(element, false);
+                    appendNewProfile(element, formType, false);
                 }
             });
         })
@@ -358,12 +361,12 @@ $(document).ready(function () {
                         target += 'os = ' + JSON.stringify(row['os']) + '; ';
                     }
 
-                    if (typeof(row['device']) !== 'undefined') {
-                        target += 'device = ' + JSON.stringify(row['device']) + '; ';
+                    if (typeof(row['devices']) !== 'undefined') {
+                        target += 'devices = ' + JSON.stringify(row['devices']) + '; ';
                     }
 
-                    if (typeof(row['client']) !== 'undefined') {
-                        target += 'client = ' + JSON.stringify(row['client']) + '; ';
+                    if (typeof(row['clients']) !== 'undefined') {
+                        target += 'clients = ' + JSON.stringify(row['clients']) + '; ';
                     }
 
                     return target;
@@ -371,7 +374,7 @@ $(document).ready(function () {
             },
             {
                 "targets": 3,
-                "orderable": false,
+                "orderable": false
             },
             {
                 "targets": 4,
@@ -393,7 +396,7 @@ $(document).ready(function () {
     $('#new-experiment-button').on('click', function(){
         $('#experiment-action-title').text('New experiment');
         $('#experiment-form-modal').modal();
-        reloadProfiles();
+        reloadProfiles([], 'experiment');
         reloadTargets();
     });
 
@@ -433,4 +436,22 @@ $(document).ready(function () {
         }
         return '<td style="border: 0;"><label class="profile-choice"><input type="checkbox" '+checked+' name="experiment[' + key + '][]" value="'+element+'">'+element+'</label></td>';
     }
+
+    $('#experiment-form-submit').on('click', function (e) {
+        e.preventDefault();
+        var data = $('#experiment-form').serializeArray();
+        $.ajax({
+            url: Routing.generate('ongr_settings_experiments_submit'),
+            data: data,
+            success: function (response) {
+                if (response.error == false) {
+                    settingTable.ajax.reload();
+                    $('#experiment-form-modal').modal('hide')
+                } else {
+                    $('#experiment-form-error-message').html(response.message);
+                    $('#experiment-form-error').show();
+                }
+            }
+        });
+    });
 });
