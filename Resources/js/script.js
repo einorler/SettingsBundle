@@ -355,7 +355,14 @@ $(document).ready(function () {
                 "targets": 2,
                 "orderable": false,
                 "render": function (data, type, row) {
-                    return row['value'];
+                    var targets = JSON.parse(row['value']);
+                    var result = '';
+
+                    for (var target in targets) {
+                        result += target + ' = ' + JSON.stringify(targets[target]) + '; ';
+                    }
+
+                    return result;
                 }
             },
             {
