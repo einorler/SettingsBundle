@@ -69,19 +69,19 @@ class Experiment implements SerializableInterface
      *
      * @ES\Property(type="string", options={"index"="not_analyzed"})
      */
-    private $client = [];
+    private $clients = [];
 
     /**
      * @var array
      *
      * @ES\Property(type="string", options={"index"="not_analyzed"})
      */
-    private $device = [];
+    private $devices = [];
 
     /**
      * @var bool
      *
-     * @ES\Property(type="bool")
+     * @ES\Property(type="boolean")
      */
     private $active;
 
@@ -167,33 +167,33 @@ class Experiment implements SerializableInterface
     /**
      * @return array
      */
-    public function getClient()
+    public function getClients()
     {
-        return $this->client;
+        return $this->clients;
     }
 
     /**
-     * @param array $client
+     * @param array $clients
      */
-    public function setClient($client)
+    public function setClients($clients)
     {
-        $this->client = $client;
+        $this->clients = $clients;
     }
 
     /**
      * @return array
      */
-    public function getDevice()
+    public function getDevices()
     {
-        return $this->device;
+        return $this->devices;
     }
 
     /**
-     * @param array $device
+     * @param array $devices
      */
-    public function setDevice($device)
+    public function setDevices($devices)
     {
-        $this->device = $device;
+        $this->devices = $devices;
     }
 
     /**
