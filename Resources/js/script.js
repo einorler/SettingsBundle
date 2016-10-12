@@ -340,7 +340,7 @@ $(document).ready(function () {
                     var on = label.clone().html('ON').attr('data-element', className + '-' + row['name']);
                     var off = label.clone().html('OFF').attr('data-element', className + '-' + row['name']);
 
-                    if (row['active'] == true) {
+                    if (row['active'].indexOf(row['name']) != -1) {
                         on.addClass('btn-primary');
                     } else {
                         off.addClass('btn-primary');

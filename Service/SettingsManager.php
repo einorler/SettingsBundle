@@ -490,7 +490,7 @@ class SettingsManager
         }
 
         if ($this->has($this->activeExperimentsSettingName)) {
-            $experiments = json_decode($this->get($this->activeExperimentsSettingName)->getValue());
+            $experiments = $this->get($this->activeExperimentsSettingName)->getValue();
         } else {
             $this->create(
                 [

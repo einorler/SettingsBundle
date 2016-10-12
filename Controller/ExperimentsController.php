@@ -66,14 +66,17 @@ class ExperimentsController extends Controller
         /** @var SettingsManager $manager */
         $manager = $this->get('ongr_settings.settings_manager');
         $experiments = $manager->getAllExperiments();
+        $activeExperiments = $manager->getActiveExperiments();
 
         /** @var Setting $experiment */
         foreach ($experiments as $experiment) {
-            $experimentsArray[] = $experiment->getSerializableData();
+            $experiment = $experiment->getSerializableData();
+            $experiment['active'] = $activeExperiments;
+            $experimentsArray[] = $experiment;
         }
 
         return new JsonResponse(
-            ['count' => count($experiments), 'documents' => $experimentsArray, 'active' => $manager->getActiveExperiments()]
+            ['count' => count($experiments), 'documents' => $experimentsArray]
         );
     }
 
