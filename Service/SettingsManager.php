@@ -477,7 +477,33 @@ class SettingsManager
         return $experiments;
     }
 
+    /**
+     * Returns active experiments either from cache or from es.
+     * If none are found, the setting with no active experiments is
+     * created.
+     *
+     * @return array
+     */
     public function getActiveExperiments() {
+        if ($this->cache->contains($this->activeExperimentsSettingName)) {
+            return $this->cache->fetch($this->activeExperimentsSettingName);
+        }
 
+        if ($this->has($this->activeExperimentsSettingName)) {
+            $experiments = json_decode($this->get($this->activeExperimentsSettingName)->getValue());
+        } else {
+            $this->create(
+                [
+                    'name' => $this->activeExperimentsSettingName,
+                    'value' => [],
+                    'type' => 'hidden',
+                ]
+            );
+            $experiments = [];
+        }
+
+        $this->cache->save($this->activeExperimentsSettingName, $experiments);
+
+        return $experiments;
     }
 }
