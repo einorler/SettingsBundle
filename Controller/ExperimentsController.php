@@ -61,10 +61,10 @@ class ExperimentsController extends Controller
      */
     public function getFullExperimentsAction()
     {
-        $experiments = $this->get('ongr_settings.experiments_manager')->getAllExperimentsArray();
+        $experiments = $this->get('ongr_settings.experiments_manager')->getExperimentsArray();
 
         return new JsonResponse(
-            ['count' => 1, 'documents' => $experiments]
+            ['count' => count($experiments), 'documents' => $experiments]
         );
     }
 
@@ -109,37 +109,5 @@ class ExperimentsController extends Controller
         ];
 
         return new JsonResponse($targets);
-    }
-
-    /**
-     * Submit action to create or edit setting if not exists.
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
-     */
-    public function submitAction(Request $request)
-    {
-        try {
-            $manager = $this->get('ongr_settings.experiments_manager');
-            $data = $request->get('experiment');
-
-            if ($request->get('force')) {
-                $name = $request->get('name');
-                $manager->update($name, $data);
-            } else {
-                $manager->create($data);
-            }
-
-            return new JsonResponse(['error' => false]);
-        } catch (\Exception $e) {
-            return new JsonResponse(
-                [
-                    'error' => true,
-                    'message' => 'Error occurred! Something is wrong with provided data. '.
-                        'Please try to submit the form again.'
-                ]
-            );
-        }
     }
 }

@@ -396,7 +396,7 @@ $(document).ready(function () {
     $('#new-experiment-button').on('click', function(){
         $('#experiment-action-title').text('New experiment');
         $('#experiment-form-modal').modal();
-        reloadProfiles([], 'experiment');
+        reloadProfiles();
         reloadTargets();
     });
 
@@ -434,14 +434,14 @@ $(document).ready(function () {
         if (check) {
             checked = 'checked="checked"';
         }
-        return '<td style="border: 0;"><label class="profile-choice"><input type="checkbox" '+checked+' name="experiment[' + key + '][]" value="'+element+'">'+element+'</label></td>';
+        return '<td style="border: 0;"><label class="profile-choice"><input type="checkbox" '+checked+' name="setting[value][' + key + '][]" value="'+element+'">'+element+'</label></td>';
     }
 
     $('#experiment-form-submit').on('click', function (e) {
         e.preventDefault();
         var data = $('#experiment-form').serializeArray();
         $.ajax({
-            url: Routing.generate('ongr_settings_experiments_submit'),
+            url: Routing.generate('ongr_settings_setting_submit'),
             data: data,
             success: function (response) {
                 if (response.error == false) {
