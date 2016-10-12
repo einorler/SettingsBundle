@@ -77,3 +77,9 @@ ongr_settings_experiments_get_targets:
     defaults: { _controller: ONGRSettingsBundle:Experiments:getTargets }
     options:
         expose: true
+
+ongr_settings_experiments_submit:
+    path: /experiments/submit
+    defaults: { _controller: ONGRSettingsBundle:Experiments:submit }
+    options:
+        expose: true
