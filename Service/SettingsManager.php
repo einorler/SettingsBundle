@@ -14,6 +14,7 @@ namespace ONGR\SettingsBundle\Service;
 use Doctrine\Common\Cache\CacheProvider;
 use ONGR\CookiesBundle\Cookie\Model\GenericCookie;
 use ONGR\ElasticsearchBundle\Result\Aggregation\AggregationValue;
+use ONGR\ElasticsearchBundle\Result\DocumentIterator;
 use ONGR\ElasticsearchDSL\Aggregation\Bucketing\TermsAggregation;
 use ONGR\ElasticsearchDSL\Aggregation\Metric\TopHitsAggregation;
 use ONGR\ElasticsearchDSL\Query\TermQuery;
@@ -29,6 +30,8 @@ use ONGR\SettingsBundle\Document\Setting;
  */
 class SettingsManager
 {
+    const ALL_EXPERIMENTS_CACHE = 'ongr_settings_experiments';
+
     /**
      * Symfony event dispatcher.
      *
@@ -439,5 +442,15 @@ class SettingsManager
         $profiles = array_merge($profiles, $this->activeProfilesList);
 
         return $profiles;
+    }
+
+    /**
+     * @return DocumentIterator
+     */
+    public function getAllExperiments()
+    {
+        $experiments = $this->repo->findBy(['type' => 'experiment']);
+
+        return $experiments;
     }
 }

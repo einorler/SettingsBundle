@@ -18,6 +18,7 @@ use DeviceDetector\Parser\Device\DeviceParserAbstract;
 use DeviceDetector\Parser\OperatingSystem;
 use DeviceDetector\Parser\ParserAbstract;
 use ONGR\SettingsBundle\Document\Experiment;
+use ONGR\SettingsBundle\Document\Setting;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -61,10 +62,16 @@ class ExperimentsController extends Controller
      */
     public function getFullExperimentsAction()
     {
-        $experiments = $this->get('ongr_settings.experiments_manager')->getExperimentsArray();
+        $experimentsArray = [];
+        $experiments = $this->get('ongr_settings.settings_manager')->getAllExperiments();
+
+        /** @var Setting $experiment */
+        foreach ($experiments as $experiment) {
+            $experimentsArray[] = $experiment->getSerializableData();
+        }
 
         return new JsonResponse(
-            ['count' => count($experiments), 'documents' => $experiments]
+            ['count' => count($experiments), 'documents' => $experimentsArray]
         );
     }
 

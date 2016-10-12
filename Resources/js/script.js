@@ -355,21 +355,7 @@ $(document).ready(function () {
                 "targets": 2,
                 "orderable": false,
                 "render": function (data, type, row) {
-                    var target = '';
-
-                    if (typeof(row['os']) !== 'undefined') {
-                        target += 'os = ' + JSON.stringify(row['os']) + '; ';
-                    }
-
-                    if (typeof(row['devices']) !== 'undefined') {
-                        target += 'devices = ' + JSON.stringify(row['devices']) + '; ';
-                    }
-
-                    if (typeof(row['clients']) !== 'undefined') {
-                        target += 'clients = ' + JSON.stringify(row['clients']) + '; ';
-                    }
-
-                    return target;
+                    return row['value'];
                 }
             },
             {
