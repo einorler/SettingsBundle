@@ -491,7 +491,7 @@ class SettingsManager
      */
     public function getActiveExperiments() {
         if ($this->cache->contains($this->activeExperimentsSettingName)) {
-            return $this->cache->fetch($this->activeExperimentsSettingName);
+            return $this->cache->fetch($this->activeExperimentsSettingName)['value'];
         }
 
         if ($this->has($this->activeExperimentsSettingName)) {
@@ -507,7 +507,7 @@ class SettingsManager
             $experiments = [];
         }
 
-        $this->cache->save($this->activeExperimentsSettingName, $experiments);
+        $this->cache->save($this->activeExperimentsSettingName, ['value' => $experiments]);
 
         return $experiments;
     }
@@ -537,5 +537,35 @@ class SettingsManager
         }
 
         $this->update($setting->getName(), ['value' => $experiments]);
+    }
+
+    /**
+     * Get full experiment by caching.
+     *
+     * @param string $name
+     *
+     * @return array|null
+     *
+     * @throws LogicException
+     */
+    public function getCachedExperiment($name)
+    {
+        if ($this->cache->contains($name)) {
+            $experiment = $this->cache->fetch($name);
+        } elseif ($this->has($name)) {
+            $experiment = $this->get($name)->getSerializableData();
+        } else {
+            return null;
+        }
+
+        if (!isset($experiment['type']) || $experiment['type'] !== 'experiment') {
+            throw new LogicException(
+                sprintf('The setting `%s` was found but it is not an experiment', $name)
+            );
+        }
+
+        $this->cache->save($name, $experiment);
+
+        return $experiment;
     }
 }
