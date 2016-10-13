@@ -38,4 +38,13 @@ services:
         class: ONGR\SettingsBundle\EventListener\RequestListener
         arguments: ["@ongr_settings.cookie.active_profiles", "@ongr_settings.settings_manager"]
         tags:
-            - { name: kernel.event_listener, event: kernel.request }
+            - { name: kernel.event_listener, event: kernel.request, priority: -200 }
+
+    ongr_settings.experiment_listener:
+        class: ONGR\SettingsBundle\EventListener\ExperimentListener
+        arguments:
+            - "@ongr_settings.cookie.active_profiles"
+            - "@ongr_settings.settings_manager"
+            - "%ongr_settings.active_experiments%"
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, priority: -100 }
