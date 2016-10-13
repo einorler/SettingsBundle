@@ -13,7 +13,6 @@ namespace ONGR\SettingsBundle\EventListener;
 
 use DeviceDetector\DeviceDetector;
 use ONGR\CookiesBundle\Cookie\Model\GenericCookie;
-use ONGR\SettingsBundle\Document\Setting;
 use ONGR\SettingsBundle\Service\SettingsManager;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
@@ -49,7 +48,7 @@ class ExperimentListener
 
     public function onKernelRequest(GetResponseEvent $event)
     {
-        if (!$event->isMasterRequest()) {
+        if (!$event->isMasterRequest() || (is_array($this->cookie->getValue()) && !empty($this->cookie->getValue()))) {
             return;
         }
 
@@ -86,8 +85,6 @@ class ExperimentListener
             return;
         }
 
-        $cookie = is_array($this->cookie->getValue()) ? $this->cookie->getValue() : [];
-        $profiles = array_unique(array_merge($experimentalProfiles, $cookie));
-        $this->cookie->setValue($profiles);
+        $this->cookie->setValue($experimentalProfiles);
     }
 }

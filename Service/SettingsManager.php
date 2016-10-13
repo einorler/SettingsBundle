@@ -69,6 +69,13 @@ class SettingsManager
     private $activeProfilesCookie;
 
     /**
+     * Cookie storage for active cookies.
+     *
+     * @var GenericCookie
+     */
+    private $activeExperimentProfilesCookie;
+
+    /**
      * Active profiles setting name to store in the cache engine.
      *
      * @var string
@@ -132,6 +139,22 @@ class SettingsManager
     public function setActiveProfilesCookie($activeProfilesCookie)
     {
         $this->activeProfilesCookie = $activeProfilesCookie;
+    }
+
+    /**
+     * @return GenericCookie
+     */
+    public function getActiveExperimentProfilesCookie()
+    {
+        return $this->activeExperimentProfilesCookie;
+    }
+
+    /**
+     * @param GenericCookie $activeExperimentProfilesCookie
+     */
+    public function setActiveExperimentProfilesCookie($activeExperimentProfilesCookie)
+    {
+        $this->activeExperimentProfilesCookie = $activeExperimentProfilesCookie;
     }
 
     /**
@@ -285,6 +308,7 @@ class SettingsManager
 
             if ($setting->getType() == 'experiment') {
                 $this->cache->delete($this->activeExperimentsSettingName);
+                $this->getActiveExperimentProfilesCookie()->setClear(true);
             }
 
             $this->eventDispatcher->dispatch(Events::PRE_UPDATE, new SettingActionEvent($name, $response, $setting));
@@ -530,6 +554,7 @@ class SettingsManager
             if (($key = array_search($name, $experiments)) !== false) {
                 unset($experiments[$key]);
                 $experiments = array_values($experiments);
+                $this->getActiveExperimentProfilesCookie()->setValue($experiments);
             } else {
                 $experiments[] = $name;
             }
