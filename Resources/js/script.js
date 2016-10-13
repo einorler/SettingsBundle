@@ -454,4 +454,24 @@ $(document).ready(function () {
             $(".toggle-experiment-" + self.data('name')).toggleClass('btn-primary');
         })
     } );
+
+    $('#experiments tbody').on( 'click', 'a.delete-setting', function (e) {
+        e.preventDefault();
+        var name = $(this).data('name');
+        $.confirm({
+            text: "Are you sure you want to delete setting?",
+            title: "Confirmation required",
+            confirm: function(button) {
+                $.post(Routing.generate('ongr_settings_settings_delete'), {name: name}, function(data) {
+                    if (data.error == false) {
+                        settingTable.ajax.reload();
+                    }
+                });
+            },
+            confirmButton: "Yes, delete it",
+            cancelButton: "No",
+            confirmButtonClass: "btn-danger",
+            dialogClass: "modal-dialog modal-lg"
+        });
+    });
 });

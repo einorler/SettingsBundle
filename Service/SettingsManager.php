@@ -283,6 +283,10 @@ class SettingsManager
             $this->cache->delete($name);
             $response = $this->repo->remove($setting->getId());
 
+            if ($setting->getType() == 'experiment') {
+                $this->cache->delete($this->activeExperimentsSettingName);
+            }
+
             $this->eventDispatcher->dispatch(Events::PRE_UPDATE, new SettingActionEvent($name, $response, $setting));
 
             return $response;
