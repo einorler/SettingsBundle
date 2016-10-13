@@ -15,8 +15,10 @@ use Doctrine\Common\Cache\CacheProvider;
 use ONGR\CookiesBundle\Cookie\Model\GenericCookie;
 use ONGR\ElasticsearchBundle\Result\Aggregation\AggregationValue;
 use ONGR\ElasticsearchBundle\Result\DocumentIterator;
+use ONGR\ElasticsearchDSL\Aggregation\Bucketing\FilterAggregation;
 use ONGR\ElasticsearchDSL\Aggregation\Bucketing\TermsAggregation;
 use ONGR\ElasticsearchDSL\Aggregation\Metric\TopHitsAggregation;
+use ONGR\ElasticsearchDSL\Query\BoolQuery;
 use ONGR\ElasticsearchDSL\Query\TermQuery;
 use ONGR\SettingsBundle\Event\Events;
 use ONGR\SettingsBundle\Event\SettingActionEvent;
@@ -420,10 +422,14 @@ class SettingsManager
         $profiles = [];
 
         $search = $this->repo->createSearch();
+        $filter = new BoolQuery();
+        $filter->add(new TermQuery('type', 'experiment'), BoolQuery::MUST_NOT);
         $topHitsAgg = new TopHitsAggregation('documents', 20);
         $termAgg = new TermsAggregation('profiles', 'profile.profile');
+        $filterAgg = new FilterAggregation('filter', $filter);
         $termAgg->addAggregation($topHitsAgg);
-        $search->addAggregation($termAgg);
+        $filterAgg->addAggregation($termAgg);
+        $search->addAggregation($filterAgg);
 
         $result = $this->repo->findDocuments($search);
 
@@ -431,7 +437,7 @@ class SettingsManager
         $activeProfiles = $this->getValue($this->activeProfilesSettingName, []);
 
         /** @var AggregationValue $agg */
-        foreach ($result->getAggregation('profiles') as $agg) {
+        foreach ($result->getAggregation('filter')->getAggregation('profiles') as $agg) {
             $settings = [];
             $docs = $agg->getAggregation('documents');
             foreach ($docs['hits']['hits'] as $doc) {
