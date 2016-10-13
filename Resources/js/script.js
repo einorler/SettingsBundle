@@ -387,8 +387,11 @@ $(document).ready(function () {
     $('#experiments_filter').append(newExperimentButton.prop('outerHTML'));
 
     $('#new-experiment-button').on('click', function(){
+        $('#experiment-name-input').val('');
+        $('#experiment-name-input').attr('disabled', false);
         $('#experiment-action-title').text('New experiment');
         $('#experiment-form-modal').modal();
+        $('#force-update').val('0');
         reloadProfiles();
         reloadTargets();
     });
@@ -424,9 +427,10 @@ $(document).ready(function () {
 
     function appendNewTarget(element, key, check) {
         var checked = '';
-        if (check) {
+        if (check != null && check.indexOf(element) !== -1) {
             checked = 'checked="checked"';
         }
+
         return '<td style="border: 0;"><label class="profile-choice"><input type="checkbox" '+checked+' name="setting[value][' + key + '][]" value="'+element+'">'+element+'</label></td>';
     }
 
@@ -438,7 +442,7 @@ $(document).ready(function () {
             data: data,
             success: function (response) {
                 if (response.error == false) {
-                    settingTable.ajax.reload();
+                    experimentTable.ajax.reload();
                     $('#experiment-form-modal').modal('hide')
                 } else {
                     $('#experiment-form-error-message').html(response.message);
@@ -455,6 +459,20 @@ $(document).ready(function () {
         })
     } );
 
+    $('#experiments tbody').on( 'click', 'a.edit', function () {
+        var data = experimentTable.row( $(this).parents('tr') ).data();
+        // alert(JSON.stringify(data));
+        reloadProfiles(data.profile);
+        reloadTargets(data.value);
+        $('#experiment-action-title').text('Edit experiment');
+        $('#force-update').val('1');
+        $('#experiment-name-input').val(data.name);
+        $('#experiment-name-input').attr('disabled', true);
+        $('#experiment-name').val(data.name);
+
+        $('#experiment-form-modal').modal();
+    } );
+
     $('#experiments tbody').on( 'click', 'a.delete-setting', function (e) {
         e.preventDefault();
         var name = $(this).data('name');
@@ -464,7 +482,7 @@ $(document).ready(function () {
             confirm: function(button) {
                 $.post(Routing.generate('ongr_settings_settings_delete'), {name: name}, function(data) {
                     if (data.error == false) {
-                        settingTable.ajax.reload();
+                        experimentTable.ajax.reload();
                     }
                 });
             },
