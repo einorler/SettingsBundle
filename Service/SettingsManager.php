@@ -529,6 +529,7 @@ class SettingsManager
         if (is_array($experiments)) {
             if (($key = array_search($name, $experiments)) !== false) {
                 unset($experiments[$key]);
+                $experiments = array_values($experiments);
             } else {
                 $experiments[] = $name;
             }
