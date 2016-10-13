@@ -334,7 +334,7 @@ $(document).ready(function () {
                 "targets": 0,
                 "orderable": false,
                 "render": function ( data, type, row ) {
-                    var className = 'toggle-profile';
+                    var className = 'toggle-experiment';
                     var label = $('<label/>').addClass('btn btn-default').addClass(className)
                         .addClass(className + '-' + row['name']).attr('data-name', row['name']);
                     var on = label.clone().html('ON').attr('data-element', className + '-' + row['name']);
@@ -447,4 +447,11 @@ $(document).ready(function () {
             }
         });
     });
+
+    $('#experiments tbody').on( 'click', 'label.toggle-experiment', function () {
+        var self = $(this);
+        $.post(Routing.generate('ongr_settings_experiments_toggle'), {name:self.data('name')}, function(){
+            $(".toggle-experiment-" + self.data('name')).toggleClass('btn-primary');
+        })
+    } );
 });

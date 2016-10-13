@@ -24,6 +24,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use ONGR\ElasticsearchBundle\Service\Repository;
 use ONGR\ElasticsearchBundle\Service\Manager;
 use ONGR\SettingsBundle\Document\Setting;
+use Symfony\Component\Serializer\Exception\LogicException;
 
 /**
  * Class SettingsManager responsible for managing settings actions.
@@ -505,5 +506,32 @@ class SettingsManager
         $this->cache->save($this->activeExperimentsSettingName, $experiments);
 
         return $experiments;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function toggleExperiment($name)
+    {
+        if (!$this->has($this->activeExperimentsSettingName)) {
+            throw new LogicException(
+                sprintf('The setting `%s` is not set', $this->activeExperimentsSettingName)
+            );
+        }
+
+        $setting = $this->get($this->activeExperimentsSettingName);
+        $experiments = $setting->getValue();
+
+        if (is_array($experiments)) {
+            if (($key = array_search($name, $experiments)) !== false) {
+                unset($experiments[$key]);
+            } else {
+                $experiments[] = $name;
+            }
+        } else {
+            $experiments = [$name];
+        }
+
+        $this->update($setting->getName(), ['value' => $experiments]);
     }
 }

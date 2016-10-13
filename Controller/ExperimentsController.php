@@ -122,4 +122,21 @@ class ExperimentsController extends Controller
 
         return new JsonResponse($targets);
     }
+
+    /**
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function toggleAction(Request $request)
+    {
+        $name = $request->get('name');
+        try {
+            $this->get('ongr_settings.settings_manager')->toggleExperiment($name);
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => true]);
+        }
+
+        return new JsonResponse(['error' => false]);
+    }
 }
