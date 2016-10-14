@@ -19,3 +19,9 @@
     </table>
     {% include 'ONGRSettingsBundle:Experiments:_experiment-form.html.twig' %}
 {% endblock %}
+{% block stilesheets %}
+    <link rel="stylesheet" href="{{ asset('bundles/ongrsettings/bootstrap-multiselect.css') }}" type="text/css"/>
+{% endblock %}
+{% block javascripts %}
+    <script type="text/javascript" src="{{ asset('bundles/ongrsettings/bootstrap-multiselect.js') }}"></script>
+{% endblock %}

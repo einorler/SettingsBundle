@@ -398,40 +398,35 @@ $(document).ready(function () {
 
     function reloadTargets(select) {
         var $form = $('#experiment-form');
-        var html = '';
-        $form.find('.target-div').remove();
         $.post(Routing.generate('ongr_settings_experiments_get_targets'), function (data) {
-            // data.forEach(function (target, key) {
             for (var key in data) {
-                html += '' +
-                    '<div class="form-group target-div">' +
-                        '<label class="col-sm-2 control-label" for="experiment_name">' + key + '</label>' +
-                        '<div class="col-sm-8">' +
-                            '<div id="' + key + '-container" class="pb-5">' +
-                                '<div class="checkbox"><table class="table"><tbody>';
-                var i = 0;
-                html += '<tr>';
+                var $div = $form.find('#'+key+'-container').find('.checkbox');
+                $div.html('');
+
+
+                var $multiselect = $('<select id="multiselect-'+key+'" multiple="multiple" class="hidden" name="setting[value]['+key+'][names][]"></select>');
+
+
                 for (var target in data[key]) {
-                    html += appendNewTarget(data[key][target], key, select);
-                    if (i++ == 2) {
-                        i = 0;
-                        html += '</tr><tr>';
-                    }
+                    $multiselect = appendNewTargetOption($multiselect, data[key][target], key, select);
                 }
-                html += '</tr>';
-                html += '</tbody></table></div></div></div></div>';
+
+                $div.append($multiselect);
+                $('#multiselect-'+key).multiselect({enableFiltering: true});
             }
-            $form.append(html);
         });
     }
 
-    function appendNewTarget(element, key, check) {
-        var checked = '';
-        if (check != null && check.indexOf(element) !== -1) {
-            checked = 'checked="checked"';
+    function appendNewTargetOption(element, value, key, check) {
+        var selected = '';
+
+        if (check != null && check.indexOf(value) !== -1) {
+            selected = 'selected="true"'
         }
 
-        return '<td style="border: 0;"><label class="profile-choice"><input type="checkbox" '+checked+' name="setting[value][' + key + '][]" value="'+element+'">'+element+'</label></td>';
+        element.append('<option '+selected+' value="'+value+'">'+value+'</option>');
+
+        return element;
     }
 
     $('#experiment-form-submit').on('click', function (e) {
