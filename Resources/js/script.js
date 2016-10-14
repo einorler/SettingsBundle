@@ -402,10 +402,7 @@ $(document).ready(function () {
             for (var key in data) {
                 var $div = $form.find('#'+key+'-container').find('.checkbox');
                 $div.html('');
-
-
                 var $multiselect = $('<select id="multiselect-'+key+'" multiple="multiple" class="hidden" name="setting[value]['+key+'][names][]"></select>');
-
 
                 for (var target in data[key]) {
                     $multiselect = appendNewTargetOption($multiselect, data[key][target], key, select);
@@ -413,8 +410,29 @@ $(document).ready(function () {
 
                 $div.append($multiselect);
                 $('#multiselect-'+key).multiselect({enableFiltering: true});
+
+                var $button = $('<span class="btn btn-success target-attribute-toggle" id="target-attribute-toggle-'+key+'" style="margin-left: 10px;">More details</span>');
+                $div.append($button);
+
+                // console.log('#multiselect-'+key);
+                $('#target-attribute-toggle-'+key).on('click', $.proxy(toggleTargetAttributes, null, key));
             }
         });
+    }
+
+    function toggleTargetAttributes(target) {
+        var $button = $('#target-attribute-toggle-'+target);
+        if ($button.text() == 'More details') {
+            $button.text('Less details');
+            var targetValues = [];
+            $('#multiselect-'+target+' :selected').each(function(i, selected){
+                targetValues.push($(selected).text());
+            });
+            var $div = $('<div></div>');
+
+        } else {
+            $button.text('More details');
+        }
     }
 
     function appendNewTargetOption(element, value, key, check) {
