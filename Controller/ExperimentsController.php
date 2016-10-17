@@ -100,6 +100,10 @@ class ExperimentsController extends Controller
     {
         $types = $request->get('types');
 
+        if (!$types) {
+            return new JsonResponse();
+        }
+
         $clients = [];
 
         try {
