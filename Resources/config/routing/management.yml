@@ -78,6 +78,12 @@ ongr_settings_experiments_get_targets:
     options:
         expose: true
 
+ongr_settings_experiments_get_targets_attributes:
+    path: /experiments/get_targets_attributes
+    defaults: { _controller: ONGRSettingsBundle:Experiments:getTargetsAttributes }
+    options:
+        expose: true
+
 ongr_settings_experiments_toggle:
     path: /experiments/toggle
     defaults: { _controller: ONGRSettingsBundle:Experiments:toggle }

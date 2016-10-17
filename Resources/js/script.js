@@ -395,56 +395,116 @@ $(document).ready(function () {
         reloadProfiles();
         reloadTargets();
     });
+    
+    function reloadTarget($div, data, select, key, attribute) {
+        $div.append('<div class="col-md-2  target-attribute">'+attribute[0].toUpperCase() + attribute.substring(1)+':</span>');
+        var $multiselect = $('<select id="multiselect-'+key+'-'+attribute+'" multiple="multiple" class="hidden" name="setting[value]['+key+']['+attribute+'][]"></select>');
+
+        for (var target in data[key][attribute]) {
+            // console.log(JSON.stringify(data['Devices']));
+            $multiselect = appendNewTargetOption($multiselect, data[key][attribute][target], select, true);
+        }
+
+        var $innerDiv = $('<div class="col-md-10 target-attribute"></div>');
+        $innerDiv.append($multiselect);
+        $div.append($innerDiv);
+        $('#multiselect-'+key+'-'+attribute).multiselect({enableFiltering: true});
+
+        if (key == 'Clients' && attribute == 'types') {
+            $div.append('<div class="col-md-2  target-attribute">Client:</span>');
+            $div.append('<div class="col-md-10  target-attribute">' +
+                    '<select multiple="true" id="multiselect-Clients-clients" name="setting[value][Clients][clients][]" class="hidden"></select>' +
+                '</span>'
+            );
+
+            var $multiselectTypes = $('#multiselect-'+key+'-'+attribute);
+            var $multiselectClients = $('#multiselect-'+key+'-clients');
+            $multiselectTypes.change(function (select) {
+                $multiselectClients.html('');
+                $.post(Routing.generate(
+                    'ongr_settings_experiments_get_targets_attributes'),
+                    {'types[]' : $multiselectTypes.val()}
+                ).done(function(data) {
+                    for (var client in data) {
+                        $multiselectClients.append('<option '+select+' value="'+data[client]+'">'+data[client]+'</option>');
+                    }
+
+                    $multiselectClients.multiselect('destroy');
+                    $multiselectClients.multiselect({enableFiltering: true});
+                });
+            });
+        }
+    }
 
     function reloadTargets(select) {
         var $form = $('#experiment-form');
         $.post(Routing.generate('ongr_settings_experiments_get_targets'), function (data) {
-            for (var key in data) {
-                var $div = $form.find('#'+key+'-container').find('.checkbox');
-                $div.html('');
-                var $multiselect = $('<select id="multiselect-'+key+'" multiple="multiple" class="hidden" name="setting[value]['+key+'][names][]"></select>');
+            // 1
+            var $div = $form.find('#Devices-container').find('.checkbox');
+            $div.html('');
+            reloadTarget($div, data, select, 'Devices', 'types');
+            reloadTarget($div, data, select, 'Devices', 'brands');
+            // 2
+            var $div = $form.find('#Clients-container').find('.checkbox');
+            $div.html('');
+            reloadTarget($div, data, select, 'Clients', 'types');
 
-                for (var target in data[key]) {
-                    $multiselect = appendNewTargetOption($multiselect, data[key][target], key, select);
-                }
-
-                $div.append($multiselect);
-                $('#multiselect-'+key).multiselect({enableFiltering: true});
-
-                var $button = $('<span class="btn btn-success target-attribute-toggle" id="target-attribute-toggle-'+key+'" style="margin-left: 10px;">More details</span>');
-                $div.append($button);
-
-                // console.log('#multiselect-'+key);
-                $('#target-attribute-toggle-'+key).on('click', $.proxy(toggleTargetAttributes, null, key));
-            }
+            // var $multiselect = $('<select id="multiselect-'+key+'" multiple="multiple" class="hidden" name="setting[value]['+key+'][names][]"></select>');
+            //
+            // for (var target in data[key]) {
+            //     $multiselect = appendNewTargetOption($multiselect, data[key][target], key, select);
+            // }
+            //
+            // $div.append($multiselect);
+            // $('#multiselect-'+key).multiselect({enableFiltering: true});
+            //
+            // var $button = $('<span class="btn btn-success target-attribute-toggle" id="target-attribute-toggle-'+key+'" style="margin-left: 10px;">More details</span>');
+            // $div.append($button);
+            //
+            // $('#target-attribute-toggle-'+key).on('click', $.proxy(toggleTargetAttributes, null, key));
         });
     }
 
-    function toggleTargetAttributes(target) {
-        var $button = $('#target-attribute-toggle-'+target);
-        if ($button.text() == 'More details') {
-            $button.text('Less details');
-            var targetValues = [];
-            $('#multiselect-'+target+' :selected').each(function(i, selected){
-                targetValues.push($(selected).text());
-            });
-            var $div = $('<div></div>');
+    // function toggleTargetAttributes(target) {
+    //     var $button = $('#target-attribute-toggle-'+target);
+    //     if ($button.text() == 'More details') {
+    //         $button.text('Less details');
+    //         var targetValues = [];
+    //         $('#multiselect-'+target+' :selected').each(function(i, selected){
+    //             targetValues.push($(selected).text());
+    //         });
+    //         var $div = $('<div></div>');
+    //
+    //         $.post(Routing.generate(
+    //             'ongr_settings_experiments_get_targets_attributes'),
+    //             {'choices[]' : targetValues, 'target' : target}
+    //         ).done(function(data) {
+    //                 alert(JSON.stringify(data));
+    //             }
+    //         );
+    //
+    //
+    //     } else {
+    //         $button.text('More details');
+    //     }
+    // }
 
-        } else {
-            $button.text('More details');
-        }
-    }
-
-    function appendNewTargetOption(element, value, key, check) {
+    function appendNewTargetOption(element, value, check) {
         var selected = '';
 
         if (check != null && check.indexOf(value) !== -1) {
             selected = 'selected="true"'
         }
 
-        element.append('<option '+selected+' value="'+value+'">'+value+'</option>');
+        var $option = $('<option '+selected+' value="'+value+'">'+value+'</option>');
+
+        element.append($option);
 
         return element;
+    }
+    
+    function reloadClients(client) {
+        alert(JSON.stringify(client));
     }
 
     $('#experiment-form-submit').on('click', function (e) {

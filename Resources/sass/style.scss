@@ -45,6 +45,11 @@ body {
   }
 }
 
+.target-attribute {
+  display: inline-block;
+  padding: 5px;
+}
+
 #copy-placeholder {
   position: absolute;
   top: -10000px;

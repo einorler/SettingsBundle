@@ -11,6 +11,15 @@
 
 namespace ONGR\SettingsBundle\Controller;
 
+use DeviceDetector\Parser\Client\Browser;
+use DeviceDetector\Parser\Client\ClientParserAbstract;
+use DeviceDetector\Parser\Client\Library;
+use DeviceDetector\Parser\Client\MobileApp;
+use DeviceDetector\Parser\Client\MediaPlayer;
+use DeviceDetector\Parser\Client\PIM;
+use DeviceDetector\Parser\Client\FeedReader;
+use DeviceDetector\Parser\Device\DeviceParserAbstract;
+use DeviceDetector\Parser\OperatingSystem;
 use ONGR\SettingsBundle\Document\Setting;
 use ONGR\SettingsBundle\Service\SettingsManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -61,39 +70,50 @@ class ExperimentsController extends Controller
     {
         $targets = [
             'Devices' => [
-                'desktop',
-                'smartphone',
-                'tablet',
-                'car browser',
-                'console',
-                'tv',
+                'types' => DeviceParserAbstract::getAvailableDeviceTypeNames(),
+                'brands' => DeviceParserAbstract::$deviceBrands,
             ],
             'Clients' => [
-                'Firefox',
-                'Safari',
-                'Chrome',
-                'Opera',
-                'Edge',
-                'IE Mobile',
-                'Internet Explorer',
-                'Mobile Safari',
-                'Android Browser',
-                'Chrome Mobile',
-                'Chrome Mobile iOS',
-                'Opera Mobile',
-                'UC Browser',
+                'types' => [
+                    'Browser',
+                    'FeedReader',
+                    'Library',
+                    'MediaPlayer',
+                    'MobileApp',
+                    'PIM',
+                ]
             ],
-            'OS' => [
-                'Mac',
-                'Windows',
-                'iOS',
-                'Android',
-                'Ubuntu',
-                'Debian',
-            ],
+            'OS' => OperatingSystem::getAvailableOperatingSystems(),
         ];
 
         return new JsonResponse($targets);
+    }
+
+    /**
+     * Returns a json list of targets for experiment
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function getTargetsAttributesAction(Request $request)
+    {
+        $types = $request->get('types');
+
+        $clients = [];
+
+        try {
+            foreach ($types as $type) {
+                $clients = array_merge(
+                    ("\\DeviceDetector\\Parser\\Client\\$type")::getAvailableClients(),
+                    $clients
+                );
+            }
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => true]);
+        }
+
+        return new JsonResponse($clients);
     }
 
     /**
