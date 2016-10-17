@@ -11,13 +11,6 @@
 
 namespace ONGR\SettingsBundle\Controller;
 
-use DeviceDetector\Parser\Client\Browser;
-use DeviceDetector\Parser\Client\ClientParserAbstract;
-use DeviceDetector\Parser\Client\Library;
-use DeviceDetector\Parser\Client\MobileApp;
-use DeviceDetector\Parser\Client\MediaPlayer;
-use DeviceDetector\Parser\Client\PIM;
-use DeviceDetector\Parser\Client\FeedReader;
 use DeviceDetector\Parser\Device\DeviceParserAbstract;
 use DeviceDetector\Parser\OperatingSystem;
 use ONGR\SettingsBundle\Document\Setting;
@@ -64,9 +57,11 @@ class ExperimentsController extends Controller
     /**
      * Returns a json list of targets for experiment
      *
+     * @param Request $request
+     *
      * @return JsonResponse
      */
-    public function getTargetsAction()
+    public function getTargetsAction(Request $request)
     {
         $targets = [
             'Devices' => [
@@ -81,10 +76,17 @@ class ExperimentsController extends Controller
                     'MediaPlayer',
                     'MobileApp',
                     'PIM',
-                ]
+                ],
+                'clients' => [],
             ],
-            'OS' => OperatingSystem::getAvailableOperatingSystems(),
+            'OS' => [
+                'types' => OperatingSystem::getAvailableOperatingSystems(),
+            ]
         ];
+
+        if (!empty($select = json_decode($request->get('selected'), true)) && isset($select['Clients']['types'])) {
+            $targets['Clients']['clients'] = $this->getClientsByTypes($select['Clients']['types']);
+        }
 
         return new JsonResponse($targets);
     }
@@ -104,15 +106,8 @@ class ExperimentsController extends Controller
             return new JsonResponse();
         }
 
-        $clients = [];
-
         try {
-            foreach ($types as $type) {
-                $clients = array_merge(
-                    ("\\DeviceDetector\\Parser\\Client\\$type")::getAvailableClients(),
-                    $clients
-                );
-            }
+            $clients = $this->getClientsByTypes($types);
         } catch (\Exception $e) {
             return new JsonResponse(['error' => true]);
         }
@@ -135,5 +130,21 @@ class ExperimentsController extends Controller
         }
 
         return new JsonResponse(['error' => false]);
+    }
+
+    /**
+     * @param array $types
+     * @return array
+     */
+    private function getClientsByTypes(array $types) {
+        $clients = [];
+
+        foreach ($types as $type) {
+            $clients = array_merge(
+                ("\\DeviceDetector\\Parser\\Client\\$type")::getAvailableClients(),
+                $clients
+            );
+        }
+        return $clients;
     }
 }
