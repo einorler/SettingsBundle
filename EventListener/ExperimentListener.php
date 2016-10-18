@@ -66,16 +66,37 @@ class ExperimentListener
             $experiment = $this->settingsManager->getCachedExperiment($experiment);
             $targets = json_decode($experiment['value'], true);
 
-            if (isset($targets['Clients']) && !in_array($dd->getClient()['name'], $targets['Clients'])) {
+            if (isset($targets['Clients'])) {
+                if (isset($targets['Clients']['types']) &&
+                    !in_array(
+                        strtolower($dd->getClient()['type']),
+                        array_map('strtolower', $targets['Clients']['types'])
+                    )
+                ) {
+                    continue;
+                }
+
+                if (isset($targets['Clients']['clients']) &&
+                    !in_array($dd->getClient()['name'], $targets['Clients']['clients'])
+                ) {
+                    continue;
+                }
+            }
+
+            if (isset($targets['OS']['types']) && !in_array($dd->getOs()['name'], $targets['OS']['types'])) {
                 continue;
             }
 
-            if (isset($targets['OS']) && !in_array($dd->getOs()['name'], $targets['OS'])) {
-                continue;
-            }
+            if (isset($targets['Devices'])) {
+                if (isset($targets['Devices']['types']) &&
+                    !in_array($dd->getDeviceName(), $targets['Devices']['types'])
+                ) {
+                    continue;
+                }
 
-            if (isset($targets['Devices']) && !in_array($dd->getDevice(), $targets['Devices'])) {
-                continue;
+                if (isset($targets['Devices']['brands']) && !in_array($dd->getBrand(), $targets['Devices']['brands'])) {
+                    continue;
+                }
             }
 
             $experimentalProfiles = array_merge($experimentalProfiles, $experiment['profile']);

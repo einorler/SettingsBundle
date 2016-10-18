@@ -519,7 +519,8 @@ class SettingsManager
      *
      * @return array
      */
-    public function getActiveExperiments() {
+    public function getActiveExperiments()
+    {
         if ($this->cache->contains($this->activeExperimentsSettingName)) {
             return $this->cache->fetch($this->activeExperimentsSettingName)['value'];
         }
