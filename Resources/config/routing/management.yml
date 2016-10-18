@@ -80,7 +80,7 @@ ongr_settings_experiments_get_targets:
 
 ongr_settings_experiments_get_targets_attributes:
     path: /experiments/get_targets_attributes
-    defaults: { _controller: ONGRSettingsBundle:Experiments:getTargetsAttributes }
+    defaults: { _controller: ONGRSettingsBundle:Experiments:getClientsByTypes }
     options:
         expose: true
 

@@ -98,7 +98,7 @@ class ExperimentsController extends Controller
      *
      * @return JsonResponse
      */
-    public function getTargetsAttributesAction(Request $request)
+    public function getClientsByTypesAction(Request $request)
     {
         $types = $request->get('types');
 
@@ -106,11 +106,7 @@ class ExperimentsController extends Controller
             return new JsonResponse();
         }
 
-        try {
-            $clients = $this->getClientsByTypes($types);
-        } catch (\Exception $e) {
-            return new JsonResponse(['error' => true]);
-        }
+        $clients = $this->getClientsByTypes($types);
 
         return new JsonResponse($clients);
     }
@@ -136,15 +132,21 @@ class ExperimentsController extends Controller
      * @param array $types
      * @return array
      */
-    private function getClientsByTypes(array $types) {
+    private function getClientsByTypes(array $types)
+    {
         $clients = [];
 
-        foreach ($types as $type) {
-            $clients = array_merge(
-                ("\\DeviceDetector\\Parser\\Client\\$type")::getAvailableClients(),
-                $clients
-            );
+        try {
+            foreach ($types as $type) {
+                $clients = array_merge(
+                    ("\\DeviceDetector\\Parser\\Client\\$type")::getAvailableClients(),
+                    $clients
+                );
+            }
+        } catch (\Exception $e) {
+            return [];
         }
+
         return $clients;
     }
 }
