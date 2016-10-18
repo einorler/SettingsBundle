@@ -45,7 +45,7 @@ class ExperimentsController extends Controller
         /** @var Setting $experiment */
         foreach ($experiments as $experiment) {
             $experiment = $experiment->getSerializableData();
-            $experiment['active'] = $activeExperiments;
+            $experiment['active'] = in_array($experiment['name'], $activeExperiments);
             $experimentsArray[] = $experiment;
         }
 
