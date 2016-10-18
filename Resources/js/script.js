@@ -465,7 +465,7 @@ $(document).ready(function () {
     function appendNewTargetOption(element, value, check) {
         var selected = '';
 
-        if (check != null && check.indexOf(value) !== -1) {
+        if (check != null && check.indexOf('"'+value+'"') !== -1) {
             selected = 'selected="true"'
         }
 
