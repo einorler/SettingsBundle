@@ -33,8 +33,6 @@ use Symfony\Component\Serializer\Exception\LogicException;
  */
 class SettingsManager
 {
-    const ALL_EXPERIMENTS_CACHE = 'ongr_settings_experiments';
-
     /**
      * Symfony event dispatcher.
      *
@@ -285,6 +283,10 @@ class SettingsManager
         $this->manager->persist($setting);
         $this->manager->commit();
         $this->cache->delete($name);
+
+        if ($setting->getType() == 'experiment') {
+            $this->getActiveExperimentProfilesCookie()->setClear(true);
+        }
 
         $this->eventDispatcher->dispatch(Events::PRE_UPDATE, new SettingActionEvent($name, $data, $setting));
 
