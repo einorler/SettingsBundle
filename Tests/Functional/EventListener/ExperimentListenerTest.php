@@ -50,7 +50,7 @@ class ExperimentListenerTest extends AbstractElasticsearchTestCase
         $request = new Request();
         $request->headers->set(
             'User-Agent',
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12) AppleWebKit/602.1.50 (KHTML, like Gecko) Version/10.0 Safari/602.1.50'
+            'AppleWebKit/602.1.50 (KHTML, like Gecko) Version/10.0 Safari/602.1.50'
         );
         $event = new GetResponseEvent(static::$kernel, $request, HttpKernelInterface::MASTER_REQUEST);
         $listener->onKernelRequest($event);
