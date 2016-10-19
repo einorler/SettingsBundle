@@ -515,9 +515,8 @@ class SettingsManager
     }
 
     /**
-     * Returns active experiments either from cache or from es.
-     * If none are found, the setting with no active experiments is
-     * created.
+     * Returns an array of active experiments names either from cache or from es.
+     * If none are found, the setting with no active experiments is created.
      *
      * @return array
      */
@@ -563,7 +562,6 @@ class SettingsManager
             if (($key = array_search($name, $experiments)) !== false) {
                 unset($experiments[$key]);
                 $experiments = array_values($experiments);
-                $this->getActiveExperimentProfilesCookie()->setValue($experiments);
             } else {
                 $experiments[] = $name;
             }
