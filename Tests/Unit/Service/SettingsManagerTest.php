@@ -569,4 +569,106 @@ class SettingsManagerTest extends \PHPUnit_Framework_TestCase
         $value = $manager->getActiveProfiles();
         $this->assertEquals(['kk'], $value);
     }
+
+    public function testGetActiveExperimentsFromRepository()
+    {
+        $activeExperimentsSettingName = 'foo';
+        $experimentName = 'bar';
+        $cache = $this->cache;
+        $cache->expects($this->any())->method('contains')->willReturn(false);
+        $activeExperiments = new Setting;
+        $activeExperiments->setName($activeExperimentsSettingName);
+        $activeExperiments->setValue([$experimentName]);
+        $repository = $this->repository;
+        $repository->expects($this->any())->method('findOneBy')
+            ->with(['name.name' => $activeExperimentsSettingName])->willReturn($activeExperiments);
+        $manager = new SettingsManager(
+            $repository,
+            $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface')
+        );
+        $manager->setActiveExperimentsSettingName($activeExperimentsSettingName);
+        $manager->setCache($cache);
+
+        $activeExperiments = $manager->getActiveExperiments();
+
+        $this->assertEquals([$experimentName], $activeExperiments);
+    }
+
+    public function testGetActiveExperimentsFromCache()
+    {
+        $activeExperimentsSettingName = 'foo';
+        $experimentName = 'bar';
+        $cache = $this->cache;
+        $cache->expects($this->any())->method('contains')
+            ->with($activeExperimentsSettingName)->willReturn(true);
+        $cache->expects($this->any())->method('fetch')
+            ->with($activeExperimentsSettingName)->willReturn(['value' => [$experimentName]]);
+        $manager = new SettingsManager(
+            $this->repository,
+            $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface')
+        );
+        $manager->setActiveExperimentsSettingName($activeExperimentsSettingName);
+        $manager->setCache($cache);
+
+        $activeExperiments = $manager->getActiveExperiments();
+
+        $this->assertEquals([$experimentName], $activeExperiments);
+    }
+
+    public function testGetActiveExperimentsCreateNew()
+    {
+        $activeExperimentsSettingName = 'foo';
+        $cache = $this->cache;
+        $cache->expects($this->any())->method('contains')
+            ->with($activeExperimentsSettingName)->willReturn(false);
+        $repository = $this->repository;
+        $repository->expects($this->any())->method('findOneBy')
+            ->with(['name.name' => $activeExperimentsSettingName])->willReturn(null);
+        $manager = new SettingsManager(
+            $repository,
+            $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface')
+        );
+        $manager->setActiveExperimentsSettingName($activeExperimentsSettingName);
+        $manager->setCache($cache);
+
+        $activeExperiments = $manager->getActiveExperiments();
+
+        $this->assertEquals([], $activeExperiments);
+    }
+
+    public function testToggleExperiment()
+    {
+        $activeExperimentsSettingName = 'active_profiles';
+        $activeExperimentsSetting = new Setting();
+        $activeExperimentsSetting->setName($activeExperimentsSettingName);
+        $repository = $this->repository;
+        $repository->expects($this->any())->method('findOneBy')
+            ->with(['name.name' => $activeExperimentsSettingName])->willReturn($activeExperimentsSetting);
+        $manager = new SettingsManager(
+            $repository,
+            $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface')
+        );
+        $manager->setCache($this->cache);
+        $manager->setActiveExperimentsSettingName($activeExperimentsSettingName);
+        $manager->toggleExperiment('foo');
+        $this->assertEquals(['foo'], $activeExperimentsSetting->getValue());
+    }
+
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage The setting `active_profiles` is not set
+     */
+    public function testGetCachedExperimentException()
+    {
+        $activeExperimentsSettingName = 'active_profiles';
+        $repository = $this->repository;
+        $repository->expects($this->any())->method('findOneBy')
+            ->with(['name.name' => $activeExperimentsSettingName])->willReturn(null);
+        $manager = new SettingsManager(
+            $repository,
+            $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface')
+        );
+        $manager->setActiveExperimentsSettingName($activeExperimentsSettingName);
+        $manager->toggleExperiment('foo');
+    }
 }
