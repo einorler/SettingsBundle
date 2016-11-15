@@ -1,6 +1,6 @@
 <?php
 
-namespace ONGR\SettingsBundle\Tests\Functional;
+namespace ONGR\SettingsBundle\Tests\Functional\EventListener;
 
 use ONGR\ElasticsearchBundle\Test\AbstractElasticsearchTestCase;
 use Symfony\Component\HttpFoundation\Request;

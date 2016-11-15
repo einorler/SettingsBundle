@@ -1,13 +1,13 @@
 <?php
 
-namespace ONGR\SettingsBundle\Tests\Functional;
+namespace ONGR\SettingsBundle\Tests\Functional\EventListener;
 
 use ONGR\ElasticsearchBundle\Test\AbstractElasticsearchTestCase;
 use ONGR\SettingsBundle\Service\SettingsManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
-class RequestListener extends AbstractElasticsearchTestCase
+class RequestListenerTest extends AbstractElasticsearchTestCase
 {
     /**
      * {@inheritdoc}
@@ -59,13 +59,15 @@ class RequestListener extends AbstractElasticsearchTestCase
     {
         /** @var SettingsManager $manager */
         $manager  = $this->getContainer()->get('ongr_settings.settings_manager');
-        $cookie   = $this->getContainer()->get('ongr_settings.cookie.active_profiles');
+        $profileCookie   = $this->getContainer()->get('ongr_settings.cookie.active_profiles');
+        $experimentCookie   = $this->getContainer()->get('ongr_settings.cookie.active_experiments');
         $listener = $this->getContainer()->get('ongr_settings.request_listener');
         $activeProfiles = ['foo', 'bar'];
 
         $this->assertEmpty($manager->getActiveProfiles());
 
-        $cookie->load(json_encode($activeProfiles));
+        $profileCookie->load(json_encode($activeProfiles));
+        $experimentCookie->load('');
         $listener->onKernelRequest(
             new GetResponseEvent(static::$kernel, new Request(), $requestType)
         );

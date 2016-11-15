@@ -1,6 +1,6 @@
 <?php
 
-namespace ONGR\SettingsBundle\Tests\Unit;
+namespace ONGR\SettingsBundle\Tests\Unit\Filter;
 
 use ONGR\ElasticsearchDSL\Search;
 use ONGR\SettingsBundle\Filter\SkipHiddenSettingsFilter;
@@ -25,6 +25,11 @@ class SkipHiddenSettingsFilterTest extends \PHPUnit_Framework_TestCase
                             [
                                 'term' => [
                                     'type' => 'hidden',
+                                ],
+                            ],
+                            [
+                                'term' => [
+                                    'type' => 'experiment',
                                 ],
                             ],
                         ],
